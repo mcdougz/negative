@@ -1,5 +1,5 @@
 function main()
-	I = imread('plant.jpg');
+	I = imread('img/2.jpg');
     
     % from stackoverflow question,
     % "How do I display the red channel of an image in Matlab?"

@@ -22,7 +22,7 @@ function varargout = untitled(varargin)
 
 % Edit the above text to modify the response to help untitled
 
-% Last Modified by GUIDE v2.5 11-Oct-2013 15:48:56
+% Last Modified by GUIDE v2.5 04-Nov-2013 16:15:29
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -53,9 +53,9 @@ function untitled_OpeningFcn(hObject, eventdata, handles, varargin)
 
 
 %BEGIN SHAMEEN
-I = imread('img/1.jpg');
+I = imread('img/2.jpg');
 
-% from stackoverflow question,
+% splitting matrix from stackoverflow question,
 % "How do I display the red channel of an image in Matlab?"
 red = I(:,:,1);
 green = I(:,:,2);
@@ -104,7 +104,7 @@ function uitoggletool1_OnCallback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 % from stackoverflow question,
 % "How do I display the red channel of an image in Matlab?"
-I = imread('img/1.jpg');
+I = imread('img/2.jpg');
 red = I(:,:,1);
 green = I(:,:,2);
 blue = I(:,:,3);
@@ -114,13 +114,12 @@ blue = I(:,:,3);
 newimg(:,:,1) = adapthisteq(red);
 newimg(:,:,2) = adapthisteq(green);
 newimg(:,:,3) = adapthisteq(blue);
-newimg = imcomplement(newimg); %
+newimg = invertimage(newimg); %
 axes(handles.axes2); imhist(newimg(:,:,1));
 axes(handles.axes3); imhist(newimg(:,:,2));
 axes(handles.axes4); imhist(newimg(:,:,3));
 axes(handles.axes5); imhist(rgb2gray(newimg));
-axes(handles.axes1);
-imshow(newimg);
+axes(handles.axes1); imshow(newimg);
 
 
 % --------------------------------------------------------------------
@@ -130,7 +129,7 @@ function uitoggletool1_OffCallback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 % from stackoverflow question,
 % "How do I display the red channel of an image in Matlab?"
-I = imread('img/1.jpg');
+I = imread('img/2.jpg');
 red = I(:,:,1);
 green = I(:,:,2);
 blue = I(:,:,3);
@@ -171,3 +170,13 @@ function edit1_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+function y = invertimage(a)
+    y=a;
+    for i=1:size(a,1)
+        for j=1:size(a,2)
+            for k=1:size(a,3)
+                y(i,j,k) = 255-a(i,j,k);
+            end
+        end
+    end
