@@ -53,7 +53,7 @@ function untitled_OpeningFcn(hObject, eventdata, handles, varargin)
 
 
 %BEGIN SHAMEEN
-I = imread('plant.jpg');
+I = imread('img/1.jpg');
 
 % from stackoverflow question,
 % "How do I display the red channel of an image in Matlab?"
@@ -104,7 +104,7 @@ function uitoggletool1_OnCallback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 % from stackoverflow question,
 % "How do I display the red channel of an image in Matlab?"
-I = imread('plant.jpg');
+I = imread('img/1.jpg');
 red = I(:,:,1);
 green = I(:,:,2);
 blue = I(:,:,3);
@@ -130,7 +130,7 @@ function uitoggletool1_OffCallback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 % from stackoverflow question,
 % "How do I display the red channel of an image in Matlab?"
-I = imread('plant.jpg');
+I = imread('img/1.jpg');
 red = I(:,:,1);
 green = I(:,:,2);
 blue = I(:,:,3);
