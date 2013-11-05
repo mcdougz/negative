@@ -180,3 +180,7 @@ function y = invertimage(a)
             end
         end
     end
+
+function mouseMove (object, eventdata)
+    C = get (gca, 'CurrentPoint');
+    set(txtCoords,'String',strcat('(X,Y) = (', num2str(C(1,1)), ', ',num2str(C(1,2)), ')'),'numbertitle','off');
