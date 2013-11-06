@@ -22,7 +22,7 @@ function varargout = untitled(varargin)
 
 % Edit the above text to modify the response to help untitled
 
-% Last Modified by GUIDE v2.5 04-Nov-2013 16:15:29
+% Last Modified by GUIDE v2.5 06-Nov-2013 23:49:28
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -68,7 +68,6 @@ axes(handles.axes4); imhist(blue);
 axes(handles.axes5); imhist(grey);
 axes(handles.axes1);
 imshow(I);
-
 set (gcf, 'WindowButtonMotionFcn', @mouseMove);
 %END SHAMEEN
 
@@ -180,7 +179,8 @@ function y = invertimage(a)
             end
         end
     end
-
+    
 function mouseMove (object, eventdata)
     C = get (gca, 'CurrentPoint');
-    set(txtCoords,'String',strcat('(X,Y) = (', num2str(C(1,1)), ', ',num2str(C(1,2)), ')'),'numbertitle','off');
+    str = strcat('(X,Y) = (', num2str(C(1,1)), ', ',num2str(C(1,2)), ')');
+    set(handles.txtCoords,'string',str);
