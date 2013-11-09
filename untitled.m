@@ -22,7 +22,7 @@ function varargout = untitled(varargin)
 
 % Edit the above text to modify the response to help untitled
 
-% Last Modified by GUIDE v2.5 06-Nov-2013 23:49:28
+% Last Modified by GUIDE v2.5 09-Nov-2013 11:39:56
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -103,7 +103,8 @@ function uitoggletool1_OnCallback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 % from stackoverflow question,
 % "How do I display the red channel of an image in Matlab?"
-I = imread('img/2.jpg');
+axes(handles.axes1);imshow(imread('img/loading.png'));drawnow %loading
+I = imread(get(handles.edit1,'String'));
 red = I(:,:,1);
 green = I(:,:,2);
 blue = I(:,:,3);
@@ -128,7 +129,8 @@ function uitoggletool1_OffCallback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 % from stackoverflow question,
 % "How do I display the red channel of an image in Matlab?"
-I = imread('img/2.jpg');
+axes(handles.axes1);imshow(imread('img/loading.png'));drawnow %loading
+I = imread(get(handles.edit1,'String'));
 red = I(:,:,1);
 green = I(:,:,2);
 blue = I(:,:,3);
@@ -142,21 +144,9 @@ axes(handles.axes2); imhist(newimg(:,:,1));
 axes(handles.axes3); imhist(newimg(:,:,2));
 axes(handles.axes4); imhist(newimg(:,:,3));
 axes(handles.axes5); imhist(rgb2gray(newimg));
-axes(handles.axes1);
-imshow(newimg);
+axes(handles.axes1); imshow(newimg);
 
 % END SHAMEEN
-
-
-
-function edit1_Callback(hObject, eventdata, handles)
-% hObject    handle to edit1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit1 as text
-%        str2double(get(hObject,'String')) returns contents of edit1 as a double
-
 
 % --- Executes during object creation, after setting all properties.
 function edit1_CreateFcn(hObject, eventdata, handles)
@@ -179,8 +169,3 @@ function y = invertimage(a)
             end
         end
     end
-    
-function mouseMove (object, eventdata)
-    C = get (gca, 'CurrentPoint');
-    str = strcat('(X,Y) = (', num2str(C(1,1)), ', ',num2str(C(1,2)), ')');
-    set(handles.txtCoords,'string',str);
