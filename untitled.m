@@ -22,7 +22,7 @@ function varargout = untitled(varargin)
 
 % Edit the above text to modify the response to help untitled
 
-% Last Modified by GUIDE v2.5 09-Nov-2013 11:39:56
+% Last Modified by GUIDE v2.5 11-Nov-2013 14:18:25
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -53,7 +53,7 @@ function untitled_OpeningFcn(hObject, eventdata, handles, varargin)
 
 
 %BEGIN SHAMEEN
-I = imread('img/2.jpg');
+I = imread(get(handles.edit1,'String'));
 
 % splitting matrix from stackoverflow question,
 % "How do I display the red channel of an image in Matlab?"
@@ -103,7 +103,7 @@ function uitoggletool1_OnCallback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 % from stackoverflow question,
 % "How do I display the red channel of an image in Matlab?"
-axes(handles.axes1);imshow(imread('img/loading.png'));drawnow %loading
+axes(handles.axes1);imshow(imread('res/loading.png'));drawnow %loading
 I = imread(get(handles.edit1,'String'));
 red = I(:,:,1);
 green = I(:,:,2);
@@ -129,7 +129,7 @@ function uitoggletool1_OffCallback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 % from stackoverflow question,
 % "How do I display the red channel of an image in Matlab?"
-axes(handles.axes1);imshow(imread('img/loading.png'));drawnow %loading
+axes(handles.axes1);imshow(imread('res/loading.png'));drawnow %loading
 I = imread(get(handles.edit1,'String'));
 red = I(:,:,1);
 green = I(:,:,2);
