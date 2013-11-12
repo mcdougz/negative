@@ -22,7 +22,7 @@ function varargout = untitled(varargin)
 
 % Edit the above text to modify the response to help untitled
 
-% Last Modified by GUIDE v2.5 12-Nov-2013 17:52:51
+% Last Modified by GUIDE v2.5 12-Nov-2013 18:12:02
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -54,20 +54,9 @@ function untitled_OpeningFcn(hObject, eventdata, handles, varargin)
 
 
 %BEGIN SHAMEEN
+global IMG;
 IMG = imread(get(handles.edit1,'String'));
-
-% splitting matrix from stackoverflow question,
-% "How do I display the red channel of an image in Matlab?"
-red = IMG(:,:,1);
-green = IMG(:,:,2);
-blue = IMG(:,:,3);
-grey = rgb2gray(IMG);
-
-axes(handles.axes2); title('Red');imhist(red);
-axes(handles.axes3); imhist(green);
-axes(handles.axes4); imhist(blue);
-axes(handles.axes5); imhist(grey);
-axes(handles.axes1); imshow(IMG);
+showImage(handles);
 
 %mousemove function
 set (gcf, 'WindowButtonMotionFcn', @mouseMove);
@@ -96,7 +85,6 @@ function varargout = untitled_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 
-
 % --------------------------------------------------------------------
 function toolbarInvertImage(hObject, eventdata, handles)
 % hObject    handle to toolbarInvert (see GCBO)
@@ -108,17 +96,7 @@ axes(handles.axes1);imshow(imread('res/loading.png'));drawnow %loading
 
 global IMG;
 IMG = invertimage(IMG); %
-axes(handles.axes1); imshow(IMG);
-axes(handles.axes2); imhist(IMG(:,:,1));
-axes(handles.axes3); imhist(IMG(:,:,2));
-axes(handles.axes4); imhist(IMG(:,:,3));
-axes(handles.axes5); imhist(rgb2gray(IMG));
-
-
-
-
-
-
+showImage(handles);
 
 % --- Executes during object creation, after setting all properties.
 function edit1_CreateFcn(hObject, eventdata, handles)
@@ -139,13 +117,14 @@ function toolbarHisteq_OnCallback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global IMG;
+%backups are bad, see the offCall
 global backupIMG;
 backupIMG = IMG;
 %TODO: loop this through channels instead of assuming three
 IMG(:,:,1) = adapthisteq(IMG(:,:,1));
 IMG(:,:,2) = adapthisteq(IMG(:,:,2));
 IMG(:,:,3) = adapthisteq(IMG(:,:,3));
-refreshHists();
+showImage(handles);
 
 % --------------------------------------------------------------------
 function toolbarHisteq_OffCallback(hObject, eventdata, handles)
@@ -158,3 +137,15 @@ function toolbarHisteq_OffCallback(hObject, eventdata, handles)
 global IMG;
 global backupIMG;
 IMG = backupIMG;
+axes(handles.axes1); imshow(IMG);
+showImage(handles);
+
+function showImage(handles)
+% splitting matrix from stackoverflow question,
+% "How do I display the red channel of an image in Matlab?"
+global IMG;
+axes(handles.axes1); imshow(IMG);
+axes(handles.axes2); imhist(IMG(:,:,1));
+axes(handles.axes3); imhist(IMG(:,:,2));
+axes(handles.axes4); imhist(IMG(:,:,3));
+axes(handles.axes5); imhist(rgb2gray(IMG));
