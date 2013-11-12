@@ -22,7 +22,7 @@ function varargout = untitled(varargin)
 
 % Edit the above text to modify the response to help untitled
 
-% Last Modified by GUIDE v2.5 12-Nov-2013 17:47:43
+% Last Modified by GUIDE v2.5 12-Nov-2013 17:52:51
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -131,3 +131,41 @@ function edit1_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --------------------------------------------------------------------
+function toolbarHisteq_OnCallback(hObject, eventdata, handles)
+% hObject    handle to toolbarHisteq (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global IMG;
+global backupIMG;
+backupIMG = IMG;
+%TODO: loop this through channels instead of assuming three
+IMG(:,:,1) = adapthisteq(IMG(:,:,1));
+IMG(:,:,2) = adapthisteq(IMG(:,:,2));
+IMG(:,:,3) = adapthisteq(IMG(:,:,3));
+
+axes(handles.axes1); imshow(IMG);
+axes(handles.axes2); imhist(IMG(:,:,1));
+axes(handles.axes3); imhist(IMG(:,:,2));
+axes(handles.axes4); imhist(IMG(:,:,3));
+axes(handles.axes5); imhist(rgb2gray(IMG));
+
+% --------------------------------------------------------------------
+function toolbarHisteq_OffCallback(hObject, eventdata, handles)
+% hObject    handle to toolbarHisteq (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+%TODO: Any changes made in between turning it on and off will be lost, find
+%a way to fix it (maybe have a history of changes made?)
+global IMG;
+global backupIMG;
+IMG = backupIMG;
+
+axes(handles.axes1); imshow(IMG);
+axes(handles.axes2); imhist(IMG(:,:,1));
+axes(handles.axes3); imhist(IMG(:,:,2));
+axes(handles.axes4); imhist(IMG(:,:,3));
+axes(handles.axes5); imhist(rgb2gray(IMG));
