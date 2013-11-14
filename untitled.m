@@ -22,7 +22,7 @@ function varargout = untitled(varargin)
 
 % Edit the above text to modify the response to help untitled
 
-% Last Modified by GUIDE v2.5 12-Nov-2013 18:12:02
+% Last Modified by GUIDE v2.5 14-Nov-2013 17:32:21
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -141,3 +141,18 @@ global IMG;
 global backupIMG;
 IMG = backupIMG;
 showImage(handles);
+
+
+
+function edit1_Callback(hObject, eventdata, handles)
+% hObject    handle to edit1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit1 as text
+%        str2double(get(hObject,'String')) returns contents of edit1 as a double
+global IMG;
+%image path from textbox on the gui
+IMG = imread(get(hObject,'String'));
+showImage(handles);
+%todo: reset adjustments to off
