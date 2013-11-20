@@ -22,7 +22,7 @@ function varargout = untitled(varargin)
 
 % Edit the above text to modify the response to help untitled
 
-% Last Modified by GUIDE v2.5 14-Nov-2013 17:32:21
+% Last Modified by GUIDE v2.5 20-Nov-2013 15:50:27
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -43,6 +43,8 @@ else
 end
 % End initialization code - DO NOT EDIT
 global IMG;
+global plotX;
+global plotY;
 
 % --- Executes just before untitled is made visible.
 function untitled_OpeningFcn(hObject, eventdata, handles, varargin)
@@ -62,7 +64,6 @@ showImage(handles);
 
 %mousemove function
 set (gcf, 'WindowButtonMotionFcn', @mouseMove);
-
 %END SHAMEEN
 
 
@@ -156,3 +157,35 @@ global IMG;
 IMG = imread(get(hObject,'String'));
 showImage(handles);
 %todo: reset adjustments to off
+
+
+% --------------------------------------------------------------------
+function uipushtoolExperiment_ClickedCallback(hObject, eventdata, handles)
+% hObject    handle to uipushtoolExperiment (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global IMG;
+global plotX;
+global plotY;
+% test for now. should only end up with a 1x1 pixel, if something was
+% selected
+IMG = IMG(plotX,plotY,:);
+showImage(handles);
+
+
+% --- Executes on mouse press over axes background.
+function axes1_ButtonDownFcn(hObject, eventdata, handles)
+% hObject    handle to axes1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+imgClick();
+
+
+% --------------------------------------------------------------------
+function uipushtool3_ClickedCallback(hObject, eventdata, handles)
+% hObject    handle to uipushtool3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+set(handles.axes1,'HitTest','off');
+set(handles.axes1,'ButtonDownFcn',@imgClick);
+set(handles.axes1,'HitTest','on');
