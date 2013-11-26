@@ -7,8 +7,8 @@ function y = removeCast(img,r,g,b)
 %(maybe +value?)
 
 y=img;
-for i=1:size(a,1)
-    for j=1:size(a,2)
+for i=1:size(img,1)
+    for j=1:size(img,2)
         y(i,j,1) = img(i,j,1)-r;
         y(i,j,2) = img(i,j,2)-g;
         y(i,j,3) = img(i,j,3)-b;

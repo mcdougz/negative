@@ -22,7 +22,7 @@ function varargout = untitled(varargin)
 
 % Edit the above text to modify the response to help untitled
 
-% Last Modified by GUIDE v2.5 20-Nov-2013 15:50:27
+% Last Modified by GUIDE v2.5 26-Nov-2013 10:17:34
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -189,3 +189,13 @@ function uipushtool3_ClickedCallback(hObject, eventdata, handles)
 set(handles.axes1,'HitTest','off');
 set(handles.axes1,'ButtonDownFcn',@imgClick);
 set(handles.axes1,'HitTest','on');
+
+
+% --------------------------------------------------------------------
+function uipushtool4_ClickedCallback(hObject, eventdata, handles)
+% hObject    handle to uipushtool4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global IMG;
+IMG = removeCast(IMG,57,44,80); %cast for 2.jpg
+showImage(handles);
