@@ -153,8 +153,14 @@ function edit1_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of edit1 as text
 %        str2double(get(hObject,'String')) returns contents of edit1 as a double
 global IMG;
-%image path from textbox on the gui
+
+% get image path from textbox on the gui
 IMG = imread(get(hObject,'String'));
+
+% put image dimensions on the right
+imgsize = strcat('[',num2str(size(IMG,2)),',',num2str(size(IMG,1)),']');
+set(findobj(gcf,'-depth',1,'Tag','txtCoords'),'String',imgsize);
+
 showImage(handles);
 %todo: reset adjustments to off
 
