@@ -22,7 +22,7 @@ function varargout = untitled(varargin)
 
 % Edit the above text to modify the response to help untitled
 
-% Last Modified by GUIDE v2.5 02-Dec-2013 23:28:51
+% Last Modified by GUIDE v2.5 02-Dec-2013 19:00:31
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -175,8 +175,7 @@ global plotX;
 global plotY;
 % test for now. should only end up with a 1x1 pixel, if something was
 % selected
-msgbox(strcat(num2str(plotX),',',num2str(plotY)));
-%IMG = IMG(plotX,plotY,:);
+IMG = IMG(plotX,plotY,:);
 showImage(handles);
 
 
@@ -193,9 +192,9 @@ function uipushtool3_ClickedCallback(hObject, eventdata, handles)
 % hObject    handle to uipushtool3 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-set(gca,'HitTest','off');
-set(gca,'ButtonDownFcn',@imgClick);
-set(gca,'HitTest','on');
+set(handles.axes1,'HitTest','off');
+set(handles.axes1,'ButtonDownFcn',@imgClick);
+set(handles.axes1,'HitTest','on');
 
 
 % --------------------------------------------------------------------
@@ -204,5 +203,6 @@ function uipushtool4_ClickedCallback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global IMG;
+msgbox(getCursorInfo(handles.datacursor));
 IMG = removeCast(IMG,57,44,80); %cast for 2.jpg
 showImage(handles);

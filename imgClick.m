@@ -7,3 +7,4 @@ plotY = num2str(C(1,2));
 coords = strcat('(',plotX,', ',plotY,')');
 %coords = strcat('(',num2str(C(1,1)),', ',num2str(C(1,2)),')');
 set(findobj(gcf,'Tag','txtBottom'),'String',coords);
+msgbox(coords);
