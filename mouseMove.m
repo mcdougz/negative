@@ -1,4 +1,7 @@
 function mouseMove (object, eventdata)
+    % from "How to make a figure current? How to make an axes current?"
+    set(gcf, 'currentaxes', findobj(gcf,'Tag','axes1'));
+    
     C = get (gca, 'CurrentPoint');
     x = fix(C(1,1));
     y = fix(C(1,2));
