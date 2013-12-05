@@ -22,7 +22,7 @@ function varargout = untitled(varargin)
 
 % Edit the above text to modify the response to help untitled
 
-% Last Modified by GUIDE v2.5 04-Dec-2013 16:00:50
+% Last Modified by GUIDE v2.5 05-Dec-2013 16:31:53
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -204,7 +204,7 @@ function uipushtool4_ClickedCallback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global IMG;
-IMG = removeCast(IMG,57,44,80); %cast for 2.jpg
+IMG = removeCast(IMG,204-255,212-255,175-255); %cast for 2.jpg
 showImage(handles);
 
 
@@ -214,4 +214,4 @@ function figure1_ButtonDownFcn(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 C = get (gcf, 'CurrentPoint');
-msgbox(C(1,1));
+msgbox(num2str(C(1,1)));
