@@ -91,7 +91,7 @@ varargout{1} = handles.output;
 
 % --------------------------------------------------------------------
 function showLoading()
-axes(findobj(gcf,'Tag','axes1'));
+axes(handles.axes1);
 imshow(imread('res/loading.png'));
 drawnow;
 
@@ -227,27 +227,9 @@ function btnPushOne_ClickedCallback(hObject, eventdata, handles)
 % hObject    handle to btnPushOne (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
-%'One': removecast -> invert
 global IMG;
 showLoading();
-IMG = imread('photo/2.jpg');
-%cast for 2.jpg
-IMG = removeCast(IMG,200-255,210-255,183-255);
-IMG = invertimage(IMG);
-showImage(handles);
-
-
-% --------------------------------------------------------------------
-function btnPushTwo_ClickedCallback(hObject, eventdata, handles)
-% hObject    handle to btnPushTwo (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-%'Two': adapthisteq -> removecast -> invert
-global IMG;
-showLoading();
-IMG = imread('photo/2.jpg');
+IMG = imread(get(handles.edit1,'String'));
 IMG(:,:,1) = adapthisteq(IMG(:,:,1));
 IMG(:,:,2) = adapthisteq(IMG(:,:,2));
 IMG(:,:,3) = adapthisteq(IMG(:,:,3));
@@ -259,12 +241,27 @@ showImage(handles);
 
 
 % --------------------------------------------------------------------
+function btnPushTwo_ClickedCallback(hObject, eventdata, handles)
+% hObject    handle to btnPushTwo (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global IMG;
+showLoading();
+IMG = imread(get(handles.edit1,'String'));
+%cast for 2.jpg
+IMG = removeCast(IMG,200-255,210-255,183-255);
+IMG(:,:,1) = adapthisteq(IMG(:,:,1));
+IMG(:,:,2) = adapthisteq(IMG(:,:,2));
+IMG(:,:,3) = adapthisteq(IMG(:,:,3));
+IMG = invertimage(IMG);
+showImage(handles);
+
+
+% --------------------------------------------------------------------
 function btnPushThree_ClickedCallback(hObject, eventdata, handles)
 % hObject    handle to btnPushThree (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
-%'Three': removecast -> invert -> adapthisteq
 global IMG;
 showLoading();
 IMG = imread('photo/2.jpg');
