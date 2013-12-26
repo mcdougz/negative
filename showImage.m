@@ -4,6 +4,10 @@ function showImage(handles)
 global IMG;
 axes(handles.axes1); imshow(IMG);
 set(gca,'Tag','axes1');
+set(gca,'HitTest','off');
+set(gca,'ButtonDownFcn',@imgClick);
+set(gca,'HitTest','on');
+pan off;
 axes(handles.axes2); imhist(IMG(:,:,1));
 set(gca,'Tag','axes2');
 axes(handles.axes3); imhist(IMG(:,:,2));

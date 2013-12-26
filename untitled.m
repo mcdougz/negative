@@ -22,7 +22,7 @@ function varargout = untitled(varargin)
 
 % Edit the above text to modify the response to help untitled
 
-% Last Modified by GUIDE v2.5 25-Dec-2013 18:23:11
+% Last Modified by GUIDE v2.5 26-Dec-2013 16:39:21
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -64,6 +64,7 @@ showImage(handles);
 
 %mousemove function
 set (gcf, 'WindowButtonMotionFcn', @mouseMove);
+set (gcf, 'WindowButtonDownFcn', @imgClick);
 %END SHAMEEN
 
 
@@ -170,7 +171,7 @@ showImage(handles);
 %todo: reset adjustments to off
 
 
-% --------------------------------------------------------------------
+% ---EXPERIMENT Toolbar button----------------------------------------
 function uipushtoolExperiment_ClickedCallback(hObject, eventdata, handles)
 % hObject    handle to uipushtoolExperiment (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -180,7 +181,11 @@ global plotX;
 global plotY;
 % test for now. should only end up with a 1x1 pixel, if something was
 % selected
-msgbox(strcat(num2str(plotX),',',num2str(plotY)));
+R = IMG(y,x,1);
+G = IMG(y,x,2);
+B = IMG(y,x,3);
+%todo: make it so it knows if the image is inverted or not.
+IMG = removeCast(IMG,255-R,255-G,255-B);
 %IMG = IMG(plotX,plotY,:);
 showImage(handles);
 
@@ -190,37 +195,9 @@ function axes1_ButtonDownFcn(hObject, eventdata, handles)
 % hObject    handle to axes1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-imgClick();
-
-
-% --------------------------------------------------------------------
-function uipushtool3_ClickedCallback(hObject, eventdata, handles)
-% hObject    handle to uipushtool3 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-set(gca,'HitTest','off');
-set(gca,'ButtonDownFcn',@imgClick);
-set(gca,'HitTest','on');
-
-
-% --------------------------------------------------------------------
-function uipushtool4_ClickedCallback(hObject, eventdata, handles)
-% hObject    handle to uipushtool4 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 global IMG;
 IMG = removeCast(IMG,200-255,210-255,183-255); %cast for 2.jpg
 showImage(handles);
-
-
-% --- Executes on mouse press over figure background.
-function figure1_ButtonDownFcn(hObject, eventdata, handles)
-% hObject    handle to figure1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-C = get (gcf, 'CurrentPoint');
-msgbox(num2str(C(1,1)));
-
 
 % --------------------------------------------------------------------
 function btnPushOne_ClickedCallback(hObject, eventdata, handles)
