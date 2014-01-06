@@ -22,7 +22,7 @@ function varargout = untitled(varargin)
 
 % Edit the above text to modify the response to help untitled
 
-% Last Modified by GUIDE v2.5 26-Dec-2013 16:39:21
+% Last Modified by GUIDE v2.5 06-Jan-2014 11:26:38
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -181,11 +181,11 @@ global plotX;
 global plotY;
 % test for now. should only end up with a 1x1 pixel, if something was
 % selected
-R = IMG(y,x,1);
-G = IMG(y,x,2);
-B = IMG(y,x,3);
+R = IMG(plotY,plotX,1);
+G = IMG(plotY,plotX,2);
+B = IMG(plotY,plotX,3);
 %todo: make it so it knows if the image is inverted or not.
-IMG = removeCast(IMG,255-R,255-G,255-B);
+IMG = removeCast(IMG,R,G,B);
 %IMG = IMG(plotX,plotY,:);
 showImage(handles);
 
@@ -251,4 +251,23 @@ IMG = invertimage(IMG);
 IMG(:,:,1) = adapthisteq(IMG(:,:,1));
 IMG(:,:,2) = adapthisteq(IMG(:,:,2));
 IMG(:,:,3) = adapthisteq(IMG(:,:,3));
+showImage(handles);
+
+
+% --------------------------------------------------------------------
+function btnPushRect_ClickedCallback(hObject, eventdata, handles)
+% hObject    handle to btnPushRect (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+imrect(handles.axes1);
+
+
+% --------------------------------------------------------------------
+function btnPushContrast_ClickedCallback(hObject, eventdata, handles)
+% hObject    handle to btnPushContrast (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global IMG;
+
+IMG = imadjust(IMG,[0 0.8],[0 1]);
 showImage(handles);
