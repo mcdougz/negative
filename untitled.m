@@ -54,20 +54,19 @@ function untitled_OpeningFcn(hObject, eventdata, handles, varargin)
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to untitled (see VARARGIN)
 
-
-%BEGIN SHAMEEN ####################################################
+%####################################################
 
 global IMG;
-%image path from textbox on the gui
+%image path from gui textbox
 IMG = imread(get(handles.edit1,'String'));
+%todo: invert image here?
 showImage(handles);
 
-%mousemove function
+%event listeners
 set (gcf, 'WindowButtonMotionFcn', @mouseMove);
 set (gcf, 'WindowButtonDownFcn', @imgClick);
-%END SHAMEEN
 
-
+%####################################################
 
 
 % Choose default command line output for untitled
@@ -90,11 +89,29 @@ function varargout = untitled_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 
+% --- Executes during object creation, after setting all properties.
+function edit1_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+
+
+
 % --------------------------------------------------------------------
 function showLoading()
 axes(findobj(gcf,'Tag','axes1'));
 imshow(imread('res/loading.png'));
 drawnow;
+
 
 function toolbarInvertImage(hObject, eventdata, handles)
 % hObject    handle to toolbarInvert (see GCBO)
@@ -107,18 +124,6 @@ showLoading();
 global IMG;
 IMG = invertimage(IMG); %
 showImage(handles);
-
-% --- Executes during object creation, after setting all properties.
-function edit1_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
 
 
 % --------------------------------------------------------------------
@@ -167,26 +172,10 @@ IMG = imread(get(hObject,'String'));
 imgsize = strcat('[',num2str(size(IMG,2)),',',num2str(size(IMG,1)),']');
 set(findobj(gcf,'-depth',1,'Tag','txtCoords'),'String',imgsize);
 
+%todo: invert image here?
+
 showImage(handles);
 %todo: reset adjustments to off
-
-
-% ---EXPERIMENT Toolbar button----------------------------------------
-function uipushtoolExperiment_ClickedCallback(hObject, eventdata, handles)
-% hObject    handle to uipushtoolExperiment (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
-
-% --- Executes on mouse press over axes background.
-function axes1_ButtonDownFcn(hObject, eventdata, handles)
-% hObject    handle to axes1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-global IMG;
-IMG = removeCast(IMG,200-255,210-255,183-255); %cast for 2.jpg
-showImage(handles);
 
 % --------------------------------------------------------------------
 function btnPushOne_ClickedCallback(hObject, eventdata, handles)
@@ -251,6 +240,7 @@ function btnPushRect_ClickedCallback(hObject, eventdata, handles)
 v = imrect(handles.axes1);
 set(v,'Tag','rekt');
 
+
 % --------------------------------------------------------------------
 function btnPushContrast_ClickedCallback(hObject, eventdata, handles)
 % hObject    handle to btnPushContrast (see GCBO)
@@ -280,3 +270,10 @@ B = IMG(plotY,plotX,3);
 IMG = removeCast(IMG,R,G,B);
 %IMG = IMG(plotX,plotY,:);
 showImage(handles);
+
+
+% ---EXPERIMENT Toolbar button----------------------------------------
+function uipushtoolExperiment_ClickedCallback(hObject, eventdata, handles)
+% hObject    handle to uipushtoolExperiment (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
