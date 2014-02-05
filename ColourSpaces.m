@@ -1,4 +1,5 @@
 classdef ColourSpaces
+    % converts between different colour spaces. may switch to OOP
     properties
     end
     methods

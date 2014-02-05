@@ -1,4 +1,5 @@
 function imgClick(object, eventdata)
+%called when mouse clicking on the main image
 %todo: click and drag?
 C = get (gca, 'CurrentPoint');
 global plotX;

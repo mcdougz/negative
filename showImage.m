@@ -1,4 +1,5 @@
 function showImage(handles)
+% displays the image and updates colour histograms
 % splitting matrix from stackoverflow question,
 % "How do I display the red channel of an image in Matlab?"
 global IMG;

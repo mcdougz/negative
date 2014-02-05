@@ -1,4 +1,5 @@
 function y = invertimage(a)
+    %basic image inversion
     y=a;
     for i=1:size(a,1)
         for j=1:size(a,2)
