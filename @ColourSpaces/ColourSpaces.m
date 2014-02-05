@@ -37,8 +37,8 @@ classdef ColourSpaces
             val = Cmax;
             
             %hue = ColourSpaces.denormalize(hue);
-            %sat = ColourSpaces.denormalize(sat);
-            %val = ColourSpaces.denormalize(val);
+            sat = ColourSpaces.denormalize(sat);
+            val = ColourSpaces.denormalize(val);
         end
     end
 end

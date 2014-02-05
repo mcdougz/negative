@@ -9,18 +9,15 @@ function mouseMove (object, eventdata)
     coords = strcat('(', num2str(x), ', ', num2str(y), ')');
     global IMG;
     rgbinfo = '';
+    r = IMG(y,x,1);
+    g = IMG(y,x,2);
+    b = IMG(y,x,3);
     try
-        r = IMG(y,x,1);
-        g = IMG(y,x,2);
-        b = IMG(y,x,3);
-        [h,s,v] = ColourSpaces.RGBtoHSV(r,g,b);
         rgbinfo = strcat(rgbinfo,coords);
         rgbinfo = strcat(rgbinfo,' R:',num2str(r));
         rgbinfo = strcat(rgbinfo,' G:',num2str(g));
-        rgbinfo = strcat(rgbinfo,' B:',num2str(b));
-        rgbinfo = strcat(rgbinfo,'  H:',num2str(floor(h)));
-        rgbinfo = strcat(rgbinfo,' S:',num2str(floor(s)));
-        rgbinfo = strcat(rgbinfo,' V:',num2str(floor(v)));
+        rgbinfo = strcat(rgbinfo,' B:',num2str(b)));
+        rgbinfo = strcat(rgbinfo,'\tH:',num2str(
     catch
         rgbinfo = '';
     end %try
