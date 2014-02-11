@@ -261,14 +261,12 @@ global IMG;
 global plotX;
 global plotY;
 showLoading();
-% test for now. should only end up with a 1x1 pixel, if something was
-% selected
+
 R = IMG(plotY,plotX,1);
 G = IMG(plotY,plotX,2);
 B = IMG(plotY,plotX,3);
 %todo: make it so it knows if the image is inverted or not.
 IMG = removeCast(IMG,R,G,B);
-%IMG = IMG(plotX,plotY,:);
 showImage(handles);
 
 
@@ -277,3 +275,21 @@ function uipushtoolExperiment_ClickedCallback(hObject, eventdata, handles)
 % hObject    handle to uipushtoolExperiment (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+global IMG;
+IMG = testStretchlim(IMG);
+showImage(handles);
+
+
+function testremovecast2()
+%calls the new removeCast2 instead to see if its a better algorithm
+global IMG;
+global plotX;
+global plotY;
+showLoading();
+
+R = IMG(plotY,plotX,1);
+G = IMG(plotY,plotX,2);
+B = IMG(plotY,plotX,3);
+%todo: make it so it knows if the image is inverted or not.
+IMG = removeCast2(IMG,R,G,B);
+showImage(handles);

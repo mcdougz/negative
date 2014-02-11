@@ -7,7 +7,7 @@ function y = removeCast(img,r,g,b)
 y=img;
 for i=1:size(img,1)
     for j=1:size(img,2)
-        %Scaling monitor RGB
+        %"Scaling monitor RGB"
         P1 = zeros(3,3);
         P1(1,1) = 255/img(i,j,1);
         P1(2,2) = 255/img(i,j,2);
