@@ -60,7 +60,7 @@ global IMG;
 %image path from gui textbox
 IMG = imread(get(handles.edit1,'String'));
 %todo: invert image here?
-showImage(handles);
+showImage();
 
 %event listeners
 set (gcf, 'WindowButtonMotionFcn', @mouseMove);
@@ -108,10 +108,11 @@ end
 
 % --------------------------------------------------------------------
 function showLoading()
-axes(findobj(gcf,'Tag','axes1'));
+a = findobj(gcf,'Tag','axes1');
+axes(a);
 imshow(imread('res/loading.png'));
+set(a,'Tag','axes1'); % tags get lost after imshow
 drawnow;
-
 
 function toolbarInvertImage(hObject, eventdata, handles)
 % hObject    handle to toolbarInvert (see GCBO)
@@ -123,7 +124,7 @@ showLoading();
 
 global IMG;
 IMG = invertimage(IMG); %
-showImage(handles);
+showImage();
 
 
 % --------------------------------------------------------------------
@@ -139,7 +140,7 @@ backupIMG = IMG;
 IMG(:,:,1) = adapthisteq(IMG(:,:,1));
 IMG(:,:,2) = adapthisteq(IMG(:,:,2));
 IMG(:,:,3) = adapthisteq(IMG(:,:,3));
-showImage(handles);
+showImage();
 
 % --------------------------------------------------------------------
 function toolbarHisteq_OffCallback(hObject, eventdata, handles)
@@ -152,7 +153,7 @@ function toolbarHisteq_OffCallback(hObject, eventdata, handles)
 global IMG;
 global backupIMG;
 IMG = backupIMG;
-showImage(handles);
+showImage();
 
 
 
@@ -174,7 +175,7 @@ set(findobj(gcf,'-depth',1,'Tag','txtCoords'),'String',imgsize);
 
 %todo: invert image here?
 
-showImage(handles);
+showImage();
 %todo: reset adjustments to off
 
 % --------------------------------------------------------------------
@@ -190,7 +191,7 @@ IMG = imread('photo/2.jpg');
 %cast for 2.jpg
 IMG = removeCast(IMG,200-255,210-255,183-255);
 IMG = invertimage(IMG);
-showImage(handles);
+showImage();
 
 
 % --------------------------------------------------------------------
@@ -210,7 +211,7 @@ IMG(:,:,3) = adapthisteq(IMG(:,:,3));
 IMG = removeCast(IMG,207-255,211-255,190-255);
 IMG = invertimage(IMG);
 
-showImage(handles);
+showImage();
 
 
 % --------------------------------------------------------------------
@@ -229,7 +230,7 @@ IMG = invertimage(IMG);
 IMG(:,:,1) = adapthisteq(IMG(:,:,1));
 IMG(:,:,2) = adapthisteq(IMG(:,:,2));
 IMG(:,:,3) = adapthisteq(IMG(:,:,3));
-showImage(handles);
+showImage();
 
 
 % --------------------------------------------------------------------
@@ -249,7 +250,7 @@ function btnPushContrast_ClickedCallback(hObject, eventdata, handles)
 global IMG;
 
 IMG = imadjust(IMG,[0 0.8],[0 1]);
-showImage(handles);
+showImage();
 
 
 % --------------------------------------------------------------------
@@ -267,7 +268,7 @@ G = IMG(plotY,plotX,2);
 B = IMG(plotY,plotX,3);
 %todo: make it so it knows if the image is inverted or not.
 IMG = removeCast(IMG,R,G,B);
-showImage(handles);
+showImage();
 
 
 % ---EXPERIMENT Toolbar button----------------------------------------
@@ -277,7 +278,7 @@ function uipushtoolExperiment_ClickedCallback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 global IMG;
 IMG = testStretchlim(IMG);
-showImage(handles);
+showImage();
 
 
 function testremovecast2()
@@ -292,4 +293,4 @@ G = IMG(plotY,plotX,2);
 B = IMG(plotY,plotX,3);
 %todo: make it so it knows if the image is inverted or not.
 IMG = removeCast2(IMG,R,G,B);
-showImage(handles);
+showImage();
