@@ -22,7 +22,7 @@ function varargout = untitled(varargin)
 
 % Edit the above text to modify the response to help untitled
 
-% Last Modified by GUIDE v2.5 07-Jan-2014 19:25:52
+% Last Modified by GUIDE v2.5 12-Feb-2014 16:41:15
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -45,6 +45,7 @@ end
 global IMG;
 global plotX;
 global plotY;
+global rectangle;
 
 % --- Executes just before untitled is made visible.
 function untitled_OpeningFcn(hObject, eventdata, handles, varargin)
@@ -238,8 +239,10 @@ function btnPushRect_ClickedCallback(hObject, eventdata, handles)
 % hObject    handle to btnPushRect (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+global rectangle;
 v = imrect(handles.axes1);
-set(v,'Tag','rekt');
+set(v,'Tag','rectangle');
+rectangle = v;
 
 
 % --------------------------------------------------------------------
@@ -293,4 +296,16 @@ G = IMG(plotY,plotX,2);
 B = IMG(plotY,plotX,3);
 %todo: make it so it knows if the image is inverted or not.
 IMG = removeCast2(IMG,R,G,B);
+showImage();
+
+
+% --------------------------------------------------------------------
+function btnPushCrop_ClickedCallback(hObject, eventdata, handles)
+% hObject    handle to btnPushCrop (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global rectangle;
+global IMG;
+pos = getPosition(rectangle);
+IMG = imcrop(IMG,pos);
 showImage();
