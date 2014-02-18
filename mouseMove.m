@@ -25,3 +25,11 @@ function mouseMove (object, eventdata)
         rgbinfo = '';
     end %try
     set(findobj(gcf,'Tag','txtBottom'),'String',rgbinfo);
+    
+    %viewfinder
+    viewfinderRect = [x-25,y-25,50,50];
+    viewfinder = imcrop(IMG,viewfinderRect);
+    set(gcf, 'currentaxes', findobj(gcf,'Tag','axesViewfinder'));
+    imshow(viewfinder);
+    set(gca,'Tag','axesViewfinder');
+    %todo: load color info
