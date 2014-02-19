@@ -5,18 +5,17 @@ function y = removeCast(img,r,g,b)
 % b = blue
 
 y=img;
-for i=1:size(img,1)
-    for j=1:size(img,2)
-        %"Scaling monitor RGB"
-        P1 = zeros(3,3);
-        P1(1,1) = 255/img(i,j,1);
-        P1(2,2) = 255/img(i,j,2);
-        P1(3,3) = 255/img(i,j,3);
-        P2 = [r;g;b];
-        P3 = double(P1)*double(P2);
-        
-        y(i,j,1) = P3(1);
-        y(i,j,2) = P3(2);
-        y(i,j,3) = P3(3);
-    end
-end
+
+rChange=255-r;
+gChange=255-g;
+bChange=255-b;
+
+%for i=1:size(img,1)
+%    for j=1:size(img,2)
+%        y(i,j) = y(i,j) + [rChange gChange bChange];
+%    end
+%end
+
+y(:,:,1) = y(:,:,1)+rChange;
+y(:,:,2) = y(:,:,2)+gChange;
+y(:,:,3) = y(:,:,3)+bChange;
