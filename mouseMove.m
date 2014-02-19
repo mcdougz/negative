@@ -15,12 +15,18 @@ function mouseMove (object, eventdata)
         b = IMG(y,x,3);
         [h,s,v] = ColourSpaces.RGBtoHSV(r,g,b);
         rgbinfo = strcat(rgbinfo,coords);
-        rgbinfo = strcat(rgbinfo,' R:',num2str(r));
-        rgbinfo = strcat(rgbinfo,' G:',num2str(g));
-        rgbinfo = strcat(rgbinfo,' B:',num2str(b));
-        rgbinfo = strcat(rgbinfo,'  H:',num2str(floor(h)));
-        rgbinfo = strcat(rgbinfo,' S:',num2str(floor(s)));
-        rgbinfo = strcat(rgbinfo,' V:',num2str(floor(v)));
+        %rgbinfo = strcat(rgbinfo,' R:',num2str(r));
+        %rgbinfo = strcat(rgbinfo,' G:',num2str(g));
+        %rgbinfo = strcat(rgbinfo,' B:',num2str(b));
+        %rgbinfo = strcat(rgbinfo,'  H:',num2str(floor(h)));
+        %rgbinfo = strcat(rgbinfo,' S:',num2str(floor(s)));
+        %rgbinfo = strcat(rgbinfo,' V:',num2str(floor(v)));
+        set(findobj(gcf,'Tag','txtR'),'String',num2str(r));
+        set(findobj(gcf,'Tag','txtG'),'String',num2str(g));
+        set(findobj(gcf,'Tag','txtB'),'String',num2str(b));
+        set(findobj(gcf,'Tag','txtH'),'String',num2str(h));
+        set(findobj(gcf,'Tag','txtS'),'String',num2str(s));
+        set(findobj(gcf,'Tag','txtV'),'String',num2str(v));
     catch
         rgbinfo = '';
     end %try
