@@ -1,26 +1,26 @@
-function varargout = main(varargin)
-% MAIN MATLAB code for main.fig
-%      MAIN, by itself, creates a new MAIN or raises the existing
+function varargout = untitled(varargin)
+% UNTITLED MATLAB code for untitled.fig
+%      UNTITLED, by itself, creates a new UNTITLED or raises the existing
 %      singleton*.
 %
-%      H = MAIN returns the handle to a new MAIN or the handle to
+%      H = UNTITLED returns the handle to a new UNTITLED or the handle to
 %      the existing singleton*.
 %
-%      MAIN('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in MAIN.M with the given input arguments.
+%      UNTITLED('CALLBACK',hObject,eventData,handles,...) calls the local
+%      function named CALLBACK in UNTITLED.M with the given input arguments.
 %
-%      MAIN('Property','Value',...) creates a new MAIN or raises the
+%      UNTITLED('Property','Value',...) creates a new UNTITLED or raises the
 %      existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before main_OpeningFcn gets called.  An
+%      applied to the GUI before untitled_OpeningFcn gets called.  An
 %      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to main_OpeningFcn via varargin.
+%      stop.  All inputs are passed to untitled_OpeningFcn via varargin.
 %
 %      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
 %      instance to run (singleton)".
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 
-% Edit the above text to modify the response to help main
+% Edit the above text to modify the response to help untitled
 
 % Last Modified by GUIDE v2.5 19-Feb-2014 11:34:12
 
@@ -28,8 +28,8 @@ function varargout = main(varargin)
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @main_OpeningFcn, ...
-                   'gui_OutputFcn',  @main_OutputFcn, ...
+                   'gui_OpeningFcn', @untitled_OpeningFcn, ...
+                   'gui_OutputFcn',  @untitled_OutputFcn, ...
                    'gui_LayoutFcn',  [] , ...
                    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
@@ -37,7 +37,7 @@ if nargin && ischar(varargin{1})
 end
 
 if nargout
-    [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
+    [varargout{1:nargout}] = gui_untitledfcn(gui_State, varargin{:});
 else
     gui_mainfcn(gui_State, varargin{:});
 end
@@ -46,14 +46,15 @@ global IMG;
 global plotX;
 global plotY;
 global rectangle;
+global selectMask;
 
-% --- Executes just before main is made visible.
-function main_OpeningFcn(hObject, eventdata, handles, varargin)
+% --- Executes just before untitled is made visible.
+function untitled_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to main (see VARARGIN)
+% varargin   command line arguments to untitled (see VARARGIN)
 
 %####################################################
 
@@ -79,18 +80,18 @@ set (gcf, 'WindowButtonDownFcn', @imgClick);
 %####################################################
 
 
-% Choose default command line output for main
+% Choose default command line output for untitled
 handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
 
-% UIWAIT makes main wait for user response (see UIRESUME)
+% UIWAIT makes untitled wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = main_OutputFcn(hObject, eventdata, handles) 
+function varargout = untitled_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -605,3 +606,6 @@ function uipushtoolExperiment_ClickedCallback(hObject, eventdata, handles)
 % hObject    handle to uipushtoolExperiment (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+global selectMask;
+figSelect();
+showMask();

@@ -31,3 +31,17 @@ set(findobj(gcf,'Tag','txtB2'),'String',num2str(b));
 set(findobj(gcf,'Tag','txtH2'),'String',num2str(h));
 set(findobj(gcf,'Tag','txtS2'),'String',num2str(s));
 set(findobj(gcf,'Tag','txtV2'),'String',num2str(v));
+
+%testing figSelect and fuzzySelect
+%using findobj like this seen at http://stackoverflow.com/a/470988
+fSelect = findobj('type','figure','Name','figSelect');
+if (~fSelect==0) %if figSelect is open
+    figure(fSelect);
+    aSelect = findobj('Tag','axesSelect');
+    global selectMask;
+    selectMask = fuzzySelect(IMG,plotY,plotX,10);
+    showMask();
+    %refocus on main window
+    %TODO: see if theres a way to not use figure()
+    figure(findobj('type','figure','Name','negative'));
+end

@@ -1,6 +1,12 @@
 function mouseMove (object, eventdata)
     % when hovering the mouse over the main image. shows pixel info
     % from "How to make a figure current? How to make an axes current?"
+    
+    %todo: this doesnt need to be a shared file
+    if gcf ~= findobj('type','figure','Name','negative')
+       return 
+    end
+    
     set(gcf, 'currentaxes', findobj(gcf,'Tag','axes1'));
     % axes(handles.axes1);
     C = get (gca, 'CurrentPoint');
