@@ -77,6 +77,22 @@ toolbarInvertImage(hObject, eventdata, handles);
 set (gcf, 'WindowButtonMotionFcn', @mouseMove);
 set (gcf, 'WindowButtonDownFcn', @imgClick);
 
+%create an imrect and select only the 'useful' area
+global rectangle;
+r = regionprops(~im2bw(IMG,0.8),'Area','BoundingBox');
+biggest = 1;
+for i = 1:length(r)
+    if r(i).Area > r(biggest).Area
+        biggest = i;
+    end
+end
+v = imrect(handles.axes1,r(biggest).BoundingBox);
+%todo: take a little more off the sides to remove borders
+%todo: the reel will probably be near this border
+
+set(v,'Tag','rectangle');
+rectangle = v;
+
 %####################################################
 
 
@@ -551,10 +567,7 @@ function btnPushRect_ClickedCallback(hObject, eventdata, handles)
 % hObject    handle to btnPushRect (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global rectangle;
-v = imrect(handles.axes1);
-set(v,'Tag','rectangle');
-rectangle = v;
+
 
 
 % --------------------------------------------------------------------
