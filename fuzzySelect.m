@@ -15,7 +15,7 @@ listToWork = [x,y];
 listComplete = [];
 %TODO: there might be a few ways to speed this up
 while (~isempty(listToWork)),
-    mask(listToWork(1,1),listToWork(1,2)) = 1;
+    mask(listToWork(1,1),listToWork(1,2)) = 0;
     neighbours = getFourNeighbor(listToWork(1,1),listToWork(1,2));
     for i=1:4,
         if ~ismember(neighbours(i),listComplete)

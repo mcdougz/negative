@@ -1,8 +1,17 @@
 function imgClick(object, eventdata)
 %called when mouse clicking on the main image
 %todo: click and drag?
-%todo: only need to use this event when clicking the main axes
 C = get (gca, 'CurrentPoint');
+
+%if current axes is not axes1
+if strcmp(get(gca, 'Tag'),'axes1')==0
+    return;
+end
+%if the coordinates are negative
+if C(1,1) < 0 || C(1,2) < 0
+    return;
+end
+
 global plotX;
 global plotY;
 plotX = fix(C(1,1));
@@ -40,6 +49,9 @@ if (~fSelect==0) %if figSelect is open
     aSelect = findobj('Tag','axesSelect');
     global selectMask;
     selectMask = fuzzySelect(IMG,plotY,plotX,10);
+    %TEST
+    selectMask = imagesc([IMG;selectMask]);
+    
     showMask();
     %refocus on main window
     %TODO: see if theres a way to not use figure()

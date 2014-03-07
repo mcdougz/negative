@@ -3,11 +3,20 @@ function showImage()
 % splitting matrix from stackoverflow question,
 % "How do I display the red channel of an image in Matlab?"
 global IMG;
-axes(findobj(gcf,'Tag','axes1')); imshow(IMG);
+axes(findobj(gcf,'Tag','axes1'));
+
+%apply filters here instead of replacing IMG
+brightness = get(findobj('Tag','sliderBrightness'),'Value');
+
+imshow(IMG * brightness);
+
+%fix stuff
 set(gca,'Tag','axes1');
-set(gca,'HitTest','off');
-set(gca,'ButtonDownFcn',@imgClick);
-set(gca,'HitTest','on');
+
+%set click event
+%set(gca,'HitTest','off');
+%set(gca,'ButtonDownFcn',@imgClick);
+%set(gca,'HitTest','on');
 
 pan off;
 

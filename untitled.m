@@ -22,7 +22,7 @@ function varargout = untitled(varargin)
 
 % Edit the above text to modify the response to help untitled
 
-% Last Modified by GUIDE v2.5 19-Feb-2014 11:34:12
+% Last Modified by GUIDE v2.5 05-Mar-2014 11:35:02
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -42,11 +42,6 @@ else
     gui_mainfcn(gui_State, varargin{:});
 end
 % End initialization code - DO NOT EDIT
-global IMG;
-global plotX;
-global plotY;
-global rectangle;
-global selectMask;
 
 % --- Executes just before untitled is made visible.
 function untitled_OpeningFcn(hObject, eventdata, handles, varargin)
@@ -58,9 +53,14 @@ function untitled_OpeningFcn(hObject, eventdata, handles, varargin)
 
 %####################################################
 
-global IMG;
-%load image path from gui textbox
-IMG = imread(get(handles.edit1,'String'));
+%all global variables (don't need to be set beforehand)
+%global IMG;
+%global plotX;
+%global plotY;
+%global rectangle; %can probably remove global rectangle
+%global selectMask;
+global advancedMode;
+advancedMode = 0; %TODO: make this changeable
 
 %temp: make viewfinders not show ugly empty axes
 axes(handles.axesViewfinder);
@@ -70,28 +70,14 @@ axes(handles.axesViewfinder2);
 imshow([]);
 set(gca,'Tag','axesViewfinder2');
 
-%invert image to start with
-toolbarInvertImage(hObject, eventdata, handles);
-
 %event listeners
 set (gcf, 'WindowButtonMotionFcn', @mouseMove);
 set (gcf, 'WindowButtonDownFcn', @imgClick);
 
-%create an imrect and select only the 'useful' area
-global rectangle;
-r = regionprops(~im2bw(IMG,0.8),'Area','BoundingBox');
-biggest = 1;
-for i = 1:length(r)
-    if r(i).Area > r(biggest).Area
-        biggest = i;
-    end
-end
-v = imrect(handles.axes1,r(biggest).BoundingBox);
-%todo: take a little more off the sides to remove borders
-%todo: the reel will probably be near this border
+%load image from txtImgPath
+txtImgPath_Callback(handles.txtImgPath, eventdata, handles);
 
-set(v,'Tag','rectangle');
-rectangle = v;
+
 
 %####################################################
 
@@ -117,8 +103,8 @@ function varargout = untitled_OutputFcn(hObject, eventdata, handles)
 varargout{1} = handles.output;
 
 % --- Executes during object creation, after setting all properties.
-function edit1_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit1 (see GCBO)
+function txtImgPath_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to txtImgPath (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -127,18 +113,6 @@ function edit1_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
-
-% --------------------------------------------------------------------
-function btnPushCrop_ClickedCallback(hObject, eventdata, handles)
-% hObject    handle to btnPushCrop (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-global rectangle;
-global IMG;
-pos = getPosition(rectangle);
-IMG = imcrop(IMG,pos);
-showImage();
 
 % --- Executes during object creation, after setting all properties.
 function edit2_CreateFcn(hObject, eventdata, handles)
@@ -250,8 +224,8 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 % --- Executes during object creation, after setting all properties.
-function slider2_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to slider2 (see GCBO)
+function sliderBrightness_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to sliderBrightness (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -456,6 +430,23 @@ global IMG;
 IMG = invertimage(IMG); %
 showImage();
 
+
+% --------------------------------------------------------------------
+function btnPushCrop_ClickedCallback(hObject, eventdata, handles)
+% hObject    handle to btnPushCrop (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global rectangle;
+global IMG;
+pos = getPosition(rectangle);
+IMG = imcrop(IMG,pos);
+showImage();
+
+%new rect
+[sizex,sizey] = size(IMG);
+v = imrect(findobj(gcf,'Tag','axes1'),[5,5,sizey/3-10,sizex-10]);
+rectangle = v;
+
 % --------------------------------------------------------------------
 function toolbarHisteq_OnCallback(hObject, eventdata, handles)
 % hObject    handle to toolbarHisteq (see GCBO)
@@ -486,14 +477,15 @@ showImage();
 
 
 
-function edit1_Callback(hObject, eventdata, handles)
-% hObject    handle to edit1 (see GCBO)
+function txtImgPath_Callback(hObject, eventdata, handles)
+% hObject    handle to txtImgPath (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit1 as text
-%        str2double(get(hObject,'String')) returns contents of edit1 as a double
+% Hints: get(hObject,'String') returns contents of txtImgPath as text
+%        str2double(get(hObject,'String')) returns contents of txtImgPath as a double
 global IMG;
+global advancedMode;
 
 % get image path from textbox on the gui
 IMG = imread(get(hObject,'String'));
@@ -502,7 +494,31 @@ IMG = imread(get(hObject,'String'));
 imgsize = strcat('[',num2str(size(IMG,2)),',',num2str(size(IMG,1)),']');
 set(findobj(gcf,'-depth',1,'Tag','txtCoords'),'String',imgsize);
 
-toolbarInvertImage(hObject,eventdata,handles);
+%invert image
+toolbarInvertImage(handles.toolbarInvert,eventdata,handles);
+
+%create an imrect and select only the 'useful' area
+r = regionprops(~im2bw(IMG,0.8),'Area','BoundingBox');
+biggest = 1;
+for i = 1:length(r)
+    if r(i).Area > r(biggest).Area
+        biggest = i;
+    end
+end
+if advancedMode == 1
+    v = imrect(handles.axes1,r(biggest).BoundingBox);
+else
+    %automatically crop
+    IMG = imcrop(IMG,r(biggest).BoundingBox);
+    showImage();
+    [sizex,sizey] = size(IMG);
+    v = imrect(findobj(gcf,'Tag','axes1'),[5,5,sizey/3-10,sizex-10]);
+end
+
+%todo: take a little more off the sides to remove borders
+%todo: the reel will probably be near this border
+set(v,'Tag','rectangle');
+rectangle = v;
 
 showImage();
 %todo: reset adjustments to off
@@ -622,3 +638,14 @@ function uipushtoolExperiment_ClickedCallback(hObject, eventdata, handles)
 global selectMask;
 figSelect();
 showMask();
+
+
+% --- Executes on slider movement.
+function sliderBrightness_Callback(hObject, eventdata, handles)
+% hObject    handle to sliderBrightness (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+showImage();

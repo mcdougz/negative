@@ -41,6 +41,7 @@ function mouseMove (object, eventdata)
     %viewfinder
     viewfinderRect = [x-25,y-25,50,50];
     viewfinder = imcrop(IMG,viewfinderRect);
+    %set(findobj(gcf,'Tag','axesViewfinder'),'UserData',viewfinder);
     set(gcf, 'currentaxes', findobj(gcf,'Tag','axesViewfinder'));
     imshow(viewfinder);
     set(gca,'Tag','axesViewfinder');
