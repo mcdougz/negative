@@ -48,9 +48,9 @@ if (~fSelect==0) %if figSelect is open
     figure(fSelect);
     aSelect = findobj('Tag','axesSelect');
     global selectMask;
-    selectMask = fuzzySelect(IMG,plotY,plotX,10);
+    selectMask = fuzzySelect(IMG,plotY,plotX,32);
     %TEST
-    selectMask = imagesc([IMG;selectMask]);
+    %selectMask = imagesc([IMG;selectMask]);
     
     showMask();
     %refocus on main window
