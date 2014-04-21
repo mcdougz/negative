@@ -22,7 +22,7 @@ function varargout = figLineRemover(varargin)
 
 % Edit the above text to modify the response to help figLineRemover
 
-% Last Modified by GUIDE v2.5 20-Apr-2014 17:49:12
+% Last Modified by GUIDE v2.5 21-Apr-2014 12:44:51
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -61,18 +61,19 @@ guidata(hObject, handles);
 % UIWAIT makes figLineRemover wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
-%DEBUG
+set (gcf, 'WindowButtonMotionFcn', @mouseMove);
+
+%load image on left side
+global IMG;
+%IMG = imread('photo/2.jpg');
 axes(handles.axes1);
-I = imread('photo/2.jpg');
-imshow(I);
+imshow(IMG);
 set(gca,'Tag','axes1');
+%clear right side
 axes(handles.axes2);
 imshow([]);
 set(gca,'Tag','axes2');
-
-global IMG;
-IMG = I;
-
+%create impoly
 global objPoly;
 objPoly = impoly(handles.axes1,'Closed',false);
 
@@ -84,12 +85,12 @@ function varargout = figLineRemover_OutputFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
-varargout{1} = handles.output;
+%varargout{1} = handles.output;
 
 
-% --- Executes on button press in pushbutton1.
-function pushbutton1_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton1 (see GCBO)
+% --- Executes on button press in btnClone.
+function btnClone_Callback(hObject, eventdata, handles)
+% hObject    handle to btnClone (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 distFromLine = str2num(get(handles.editDistance,'String'));
@@ -101,7 +102,7 @@ global IMG;
 img2 = lineClone(IMG,vertices, distFromLine, brushRadius);
 axes(handles.axes2);
 imshow(img2);
-set(gca,'Tag','axes1');
+set(gca,'Tag','axes2');
 
 function y = lineClone(img,vertices, distFromLine, brushRadius)
 [numPoints,~] = size(vertices);
@@ -239,6 +240,7 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 global IMG;
 IMG = getimage(findobj('Tag','axes2'));
 close;
+showImage();
 
 
 function editDistance_Callback(hObject, eventdata, handles)
@@ -248,23 +250,7 @@ function editDistance_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of editDistance as text
 %        str2double(get(hObject,'String')) returns contents of editDistance as a double
-try
-    %see if the new contents is a number
-    num = fix(str2double(get(hObject,'String')));
-    if num>=get(handles.slider1,'Min')
-        %set slider to match the edited textbox
-        if get(handles.slider1,'Max') < num
-            set(handles.slider1,'Max',get(handles.slider1,'Max'));
-        end
-        set(handles.slider1,'Value',num);
-    else
-        set(handles.slider1,'Value',15);
-        set(hObject,'Value',15);
-    end
-catch
-    set(handles.slider1,'Value',15);
-    set(hObject,'Value',15);
-end
+
 % --- Executes during object creation, after setting all properties.
 function editDistance_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to editDistance (see GCBO)
@@ -289,9 +275,11 @@ function editSize_Callback(hObject, eventdata, handles)
 try
     %see if the new contents is a number
     num = fix(str2double(get(hObject,'String')));
-    if num>=get(handles.slider2,'Min') && num<=get(handles.slider2,'Max')
+    if num>=get(handles.slider2,'Min')
         %set slider to match the edited textbox
-        set(handles.slider2,'Value',num);
+        if get(handles.slider2,'Max') < num
+            set(handles.slider2,'Max',get(handles.slider2,'Max'));
+        end
     else
         set(handles.slider2,'Value',15);
         set(hObject,'Value',15);
@@ -311,4 +299,80 @@ function editSize_CreateFcn(hObject, eventdata, handles)
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in btnRedraw.
+function btnRedraw_Callback(hObject, eventdata, handles)
+% hObject    handle to btnRedraw (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global objPoly;
+delete(objPoly);
+objPoly =  impoly(handles.axes1,'Closed',false);
+
+
+% --- Executes on key press with focus on editDistance and none of its controls.
+function editDistance_KeyPressFcn(hObject, eventdata, handles)
+% hObject    handle to editDistance (see GCBO)
+% eventdata  structure with the following fields (see UICONTROL)
+%	Key: name of the key that was pressed, in lower case
+%	Character: character interpretation of the key(s) that was pressed
+%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
+% handles    structure with handles and user data (see GUIDATA)
+if strfind('0123456789',eventdata.Character)==0
+    %if it's not a number, remove it straight away
+    s = get(hObject,'String');
+    set(hObject,'String',s(1:end-1));
+end
+try
+    %see if the new contents is a number
+    num = fix(str2double(get(hObject,'String')));
+    if num>=get(handles.slider1,'Min')
+        %set slider to match the edited textbox
+        if get(handles.slider1,'Max') < num
+            set(handles.slider1,'Max',get(handles.slider1,'Max'));
+        end
+        set(handles.slider1,'Value',num);
+        set(hObject,'BackgroundColor',[1,1,1]);
+    else
+        set(handles.slider1,'Value',15);
+        set(hObject,'BackgroundColor',[1,.7,.7]);
+    end
+catch
+    set(handles.slider1,'Value',15);
+    set(hObject,'BackgroundColor',[1,.7,.7]);
+end
+
+
+% --- Executes on key press with focus on editSize and none of its controls.
+function editSize_KeyPressFcn(hObject, eventdata, handles)
+% hObject    handle to editSize (see GCBO)
+% eventdata  structure with the following fields (see UICONTROL)
+%	Key: name of the key that was pressed, in lower case
+%	Character: character interpretation of the key(s) that was pressed
+%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
+% handles    structure with handles and user data (see GUIDATA)
+if strfind('0123456789',eventdata.Character)==0
+    %if it's not a number, remove it straight away
+    s = get(hObject,'String');
+    set(hObject,'String',s(1:end-1));
+end
+try
+    %see if the new contents is a number
+    num = fix(str2double(get(hObject,'String')));
+    if num>=get(handles.slider2,'Min')
+        %set slider to match the edited textbox
+        if get(handles.slider2,'Max') < num
+            set(handles.slider2,'Max',get(handles.slider2,'Max'));
+        end
+        set(handles.slider2,'Value',num);
+        set(hObject,'BackgroundColor',[1,1,1]);
+    else
+        set(handles.slider2,'Value',15);
+        set(hObject,'BackgroundColor',[1,.7,.7]);
+    end
+catch
+    set(handles.slider2,'Value',15);
+    set(hObject,'BackgroundColor',[1,.7,.7]);
 end
