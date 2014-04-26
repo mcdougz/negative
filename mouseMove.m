@@ -39,6 +39,6 @@ function mouseMove (object, eventdata)
     viewfinder = imcrop(IMG,viewfinderRect);
     %set(findobj(gcf,'Tag','axesViewfinder'),'UserData',viewfinder);
     set(gcf, 'currentaxes', findobj(gcf,'Tag','axesViewfinder'));
-    imshow(viewfinder);
+    imshow(applyTempFilters(viewfinder));
     set(gca,'Tag','axesViewfinder');
     %todo: load color info
