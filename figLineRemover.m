@@ -22,7 +22,7 @@ function varargout = figLineRemover(varargin)
 
 % Edit the above text to modify the response to help figLineRemover
 
-% Last Modified by GUIDE v2.5 21-Apr-2014 12:44:51
+% Last Modified by GUIDE v2.5 26-Apr-2014 17:24:25
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -65,7 +65,6 @@ set (gcf, 'WindowButtonMotionFcn', @mouseMove);
 
 %load image on left side
 global IMG;
-%IMG = imread('photo/2.jpg');
 axes(handles.axes1);
 imshow(IMG);
 set(gca,'Tag','axes1');
@@ -97,14 +96,17 @@ distFromLine = str2num(get(handles.editDistance,'String'));
 brushRadius = str2num(get(handles.editSize,'String'));
 
 global objPoly;
-vertices = getPosition(objPoly);
 global IMG;
+vertices = getPosition(objPoly);
 img2 = lineClone(IMG,vertices, distFromLine, brushRadius);
+
 axes(handles.axes2);
 imshow(img2);
 set(gca,'Tag','axes2');
 
-function y = lineClone(img,vertices, distFromLine, brushRadius)
+function y = lineClone(img, vertices, distance, brushRadius)
+% copies a section of image on top of lines defined by vertices,
+% to try and remove a visible line.
 [numPoints,~] = size(vertices);
 
 prev = vertices(1,:);
@@ -113,14 +115,14 @@ for i=2:numPoints
     
     dx = cur(1)-prev(1);
     dy = cur(2)-prev(2);
+    %use external bresenham line algorithm, (c) 2010 Aaron Wetzler
     [xs,ys] = bresenham(prev(1),prev(2),cur(1),cur(2));
     numPixels = size(xs);
-    for i=1:numPixels
-        %get section
+    for j=1:numPixels
         %todo: see if this can be sped up
-        curX = xs(i);
-        curY = ys(i);
-        cloneFrom = [curX,curY] + fix(getPerpendicularVector(dx,dy).*distFromLine);
+        curX = xs(j);
+        curY = ys(j);
+        cloneFrom = [curX,curY] + fix(getPerpendicularVector(dx,dy).*distance);
         img = cloneImageSection(img,curX,curY,cloneFrom(1),cloneFrom(2),brushRadius);
     end
     %store previous iteration for speed
@@ -190,8 +192,8 @@ end
 a = img(lowY:highY,lowX:highX,:);
 
 % --- Executes on slider movement.
-function slider1_Callback(hObject, eventdata, handles)
-% hObject    handle to slider1 (see GCBO)
+function sliderDistance_Callback(hObject, eventdata, handles)
+% hObject    handle to sliderDistance (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
@@ -200,8 +202,8 @@ function slider1_Callback(hObject, eventdata, handles)
 set(handles.editDistance,'String',num2str(fix(get(hObject,'Value'))));
 
 % --- Executes during object creation, after setting all properties.
-function slider1_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to slider1 (see GCBO)
+function sliderDistance_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to sliderDistance (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -212,8 +214,8 @@ end
 
 
 % --- Executes on slider movement.
-function slider2_Callback(hObject, eventdata, handles)
-% hObject    handle to slider2 (see GCBO)
+function sliderSize_Callback(hObject, eventdata, handles)
+% hObject    handle to sliderSize (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
@@ -222,8 +224,8 @@ function slider2_Callback(hObject, eventdata, handles)
 set(handles.editSize,'String',num2str(fix(get(hObject,'Value'))));
 
 % --- Executes during object creation, after setting all properties.
-function slider2_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to slider2 (see GCBO)
+function sliderSize_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to sliderSize (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -242,15 +244,6 @@ IMG = getimage(findobj('Tag','axes2'));
 close;
 showImage();
 
-
-function editDistance_Callback(hObject, eventdata, handles)
-% hObject    handle to editDistance (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of editDistance as text
-%        str2double(get(hObject,'String')) returns contents of editDistance as a double
-
 % --- Executes during object creation, after setting all properties.
 function editDistance_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to editDistance (see GCBO)
@@ -261,32 +254,6 @@ function editDistance_CreateFcn(hObject, eventdata, handles)
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
-end
-
-
-
-function editSize_Callback(hObject, eventdata, handles)
-% hObject    handle to editSize (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of editSize as text
-%        str2double(get(hObject,'String')) returns contents of editSize as a double
-try
-    %see if the new contents is a number
-    num = fix(str2double(get(hObject,'String')));
-    if num>=get(handles.slider2,'Min')
-        %set slider to match the edited textbox
-        if get(handles.slider2,'Max') < num
-            set(handles.slider2,'Max',get(handles.slider2,'Max'));
-        end
-    else
-        set(handles.slider2,'Value',15);
-        set(hObject,'Value',15);
-    end
-catch
-    set(handles.slider2,'Value',15);
-    set(hObject,'Value',15);
 end
 
 % --- Executes during object creation, after setting all properties.
@@ -307,6 +274,8 @@ function btnRedraw_Callback(hObject, eventdata, handles)
 % hObject    handle to btnRedraw (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+%replaces the impoly to let the user re-draw it
 global objPoly;
 delete(objPoly);
 objPoly =  impoly(handles.axes1,'Closed',false);
@@ -320,29 +289,7 @@ function editDistance_KeyPressFcn(hObject, eventdata, handles)
 %	Character: character interpretation of the key(s) that was pressed
 %	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
 % handles    structure with handles and user data (see GUIDATA)
-if strfind('0123456789',eventdata.Character)==0
-    %if it's not a number, remove it straight away
-    s = get(hObject,'String');
-    set(hObject,'String',s(1:end-1));
-end
-try
-    %see if the new contents is a number
-    num = fix(str2double(get(hObject,'String')));
-    if num>=get(handles.slider1,'Min')
-        %set slider to match the edited textbox
-        if get(handles.slider1,'Max') < num
-            set(handles.slider1,'Max',get(handles.slider1,'Max'));
-        end
-        set(handles.slider1,'Value',num);
-        set(hObject,'BackgroundColor',[1,1,1]);
-    else
-        set(handles.slider1,'Value',15);
-        set(hObject,'BackgroundColor',[1,.7,.7]);
-    end
-catch
-    set(handles.slider1,'Value',15);
-    set(hObject,'BackgroundColor',[1,.7,.7]);
-end
+validateNumToSlider(hObject, handles.sliderDistance,15);
 
 
 % --- Executes on key press with focus on editSize and none of its controls.
@@ -353,26 +300,4 @@ function editSize_KeyPressFcn(hObject, eventdata, handles)
 %	Character: character interpretation of the key(s) that was pressed
 %	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
 % handles    structure with handles and user data (see GUIDATA)
-if strfind('0123456789',eventdata.Character)==0
-    %if it's not a number, remove it straight away
-    s = get(hObject,'String');
-    set(hObject,'String',s(1:end-1));
-end
-try
-    %see if the new contents is a number
-    num = fix(str2double(get(hObject,'String')));
-    if num>=get(handles.slider2,'Min')
-        %set slider to match the edited textbox
-        if get(handles.slider2,'Max') < num
-            set(handles.slider2,'Max',get(handles.slider2,'Max'));
-        end
-        set(handles.slider2,'Value',num);
-        set(hObject,'BackgroundColor',[1,1,1]);
-    else
-        set(handles.slider2,'Value',15);
-        set(hObject,'BackgroundColor',[1,.7,.7]);
-    end
-catch
-    set(handles.slider2,'Value',15);
-    set(hObject,'BackgroundColor',[1,.7,.7]);
-end
+validateNumToSlider(hObject, handles.sliderSize,15);
