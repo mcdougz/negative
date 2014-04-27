@@ -1,12 +1,12 @@
 function showImage()
 % displays the image and updates colour histograms
 global IMG;
-axes(findobj(gcf,'Tag','axes1'));
+axes(findobj(findobj(0,'Type','figure','Name','negative'),'Tag','axes1'));
 
-%apply filters here instead of replacing IMG
-imshow(applyTempFilters());
+%apply filters here instead of editing IMG, to conserve quality
+imshow(applyTempFilters(IMG));
 
-%fix stuff
+%prevent tag being lost when axes changes into an image
 set(gca,'Tag','axes1');
 
 %set click event
@@ -16,6 +16,7 @@ set(gca,'Tag','axes1');
 
 pan off;
 
+%histograms
 axes(findobj(gcf,'Tag','axes2')); imhist(applyTempFilters(IMG(:,:,1)));
 set(gca,'Tag','axes2');
 axes(findobj(gcf,'Tag','axes3')); imhist(applyTempFilters(IMG(:,:,2)));
