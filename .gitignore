@@ -2,3 +2,5 @@
 *.m~
 *.mex*
 slprj/
+LaTeX/
+unused/
