@@ -240,7 +240,7 @@ function btnSave_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global IMG;
-IMG = getimage(findobj('Tag','axes2'));
+IMG = getimage(findobj(gcf,'Tag','axes2'));
 close;
 set(0, 'currentfigure', findobj('Type','Figure','Name','negative'));
 showImage();

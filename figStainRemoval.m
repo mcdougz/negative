@@ -22,7 +22,7 @@ function varargout = figStainRemoval(varargin)
 
 % Edit the above text to modify the response to help figStainRemoval
 
-% Last Modified by GUIDE v2.5 27-Apr-2014 12:17:42
+% Last Modified by GUIDE v2.5 27-Apr-2014 20:10:14
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -70,9 +70,9 @@ set(gca,'Tag','axes1');
 axes(handles.axes2);
 imshow([]);
 set(gca,'Tag','axes2');
-axes(handles.axes3);
+axes(handles.axesMask);
 imshow([]);
-set(gca,'Tag','axes3');
+set(gca,'Tag','axesMask');
 
 % --- Outputs from this function are returned to the command line.
 function varargout = figStainRemoval_OutputFcn(hObject, eventdata, handles) 
@@ -84,8 +84,105 @@ function varargout = figStainRemoval_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 
+%#####################################################################
+% CreateFcns for correct colouring
+%#####################################################################
+
+function sliderGreen_CreateFcn(hObject, eventdata, handles)
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+function sliderBlue_CreateFcn(hObject, eventdata, handles)
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+function sliderThreshold_CreateFcn(hObject, eventdata, handles)
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+function editThreshold_CreateFcn(hObject, eventdata, handles)
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+function editGreen_CreateFcn(hObject, eventdata, handles)
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+function editPosY_CreateFcn(hObject, eventdata, handles)
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+function editPosX_CreateFcn(hObject, eventdata, handles)
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+function editRed_CreateFcn(hObject, eventdata, handles)
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+function sliderRed_CreateFcn(hObject, eventdata, handles)
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+function editBlue_CreateFcn(hObject, eventdata, handles)
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+%#####################################################################
+% Slider/Edit synch
+%#####################################################################
+
+function sliderRed_Callback(hObject, eventdata, handles)
+set(findobj('Tag','editRed'),'String',get(hObject,'Value'));
+
+function sliderGreen_Callback(hObject, eventdata, handles)
+set(findobj('Tag','editGreen'),'String',get(hObject,'Value'));
+
+function sliderBlue_Callback(hObject, eventdata, handles)
+set(findobj('Tag','editBlue'),'String',get(hObject,'Value'));
+
+function sliderThreshold_Callback(hObject, eventdata, handles)
+set(findobj('Tag','editThreshold'),'String',get(hObject,'Value'));
+
+function editRed_Callback(hObject, eventdata, handles)
+validateNumToSlider(hObject,handles.sliderRed,0);
+
+function editGreen_Callback(hObject, eventdata, handles)
+validateNumToSlider(hObject,handles.sliderGreen,0);
+
+function editBlue_Callback(hObject, eventdata, handles)
+validateNumToSlider(hObject,handles.sliderBlue,0);
+
+function editThreshold_KeyPressFcn(hObject, eventdata, handles)
+validateNumToSlider(hObject,handles.sliderThreshold,0.1);
+
+function editRed_KeyPressFcn(hObject, eventdata, handles)
+validateNumToSlider(hObject,handles.sliderRed,0);
+
+function editGreen_KeyPressFcn(hObject, eventdata, handles)
+validateNumToSlider(hObject,handles.sliderGreen,0);
+
+function editBlue_KeyPressFcn(hObject, eventdata, handles)
+validateNumToSlider(hObject,handles.sliderTBlue,0);
+
+%######################################################################
+% Callbacks and other stuff
+%######################################################################
+
 function stainClick(object, eventdata)
 C = get (gca, 'CurrentPoint');
+Xpos = fix(C(1,1));
+Ypos = fix(C(1,2));
 
 %if current axes is not axes1
 if strcmp(get(gca, 'Tag'),'axes1')==0
@@ -96,185 +193,17 @@ if C(1,1) < 0 || C(1,2) < 0
     return;
 end
 
-set(findobj('Tag','editPosX'),'String',C(1,1));
-set(findobj('Tag','editPosY'),'String',C(1,2));
+set(findobj('Tag','editPosX'),'String',Xpos);
+set(findobj('Tag','editPosY'),'String',Ypos);
 
-%TODO: show mask in axes3
-axes(findobj('Tag','axes3'));
+%TODO: show mask in axesMask
+axes(findobj(gcf,'Tag','axesMask'));
 global selectMask;
 global IMG;
-selectMask = magicwand2(IMG,50,C(1,2),C(1,1));
+tol = fix(str2double(get(findobj('Tag','editThreshold'),'String')));
+selectMask = magicwand2(IMG,tol,Ypos,Xpos);
 imshow(selectMask);
-
-
-% --- Executes on slider movement.
-function sliderRed_Callback(hObject, eventdata, handles)
-% hObject    handle to sliderRed (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'Value') returns position of slider
-%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-set(findobj('Tag','editRed'),'String',get(hObject,'Value'));
-
-% --- Executes during object creation, after setting all properties.
-function sliderRed_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to sliderRed (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: slider controls usually have a light gray background.
-if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor',[.9 .9 .9]);
-end
-
-
-% --- Executes on slider movement.
-function sliderGreen_Callback(hObject, eventdata, handles)
-% hObject    handle to sliderGreen (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'Value') returns position of slider
-%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-set(findobj('Tag','editRedGreen'),'String',get(hObject,'Value'));
-
-% --- Executes during object creation, after setting all properties.
-function sliderGreen_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to sliderGreen (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: slider controls usually have a light gray background.
-if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor',[.9 .9 .9]);
-end
-
-
-% --- Executes on slider movement.
-function sliderBlue_Callback(hObject, eventdata, handles)
-% hObject    handle to sliderBlue (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'Value') returns position of slider
-%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-set(findobj('Tag','editBlue'),'String',get(hObject,'Value'));
-
-% --- Executes during object creation, after setting all properties.
-function sliderBlue_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to sliderBlue (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: slider controls usually have a light gray background.
-if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor',[.9 .9 .9]);
-end
-
-
-% --- Executes on slider movement.
-function sliderThreshold_Callback(hObject, eventdata, handles)
-% hObject    handle to sliderThreshold (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'Value') returns position of slider
-%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-set(findobj('Tag','editThreshold'),'String',get(hObject,'Value'));
-
-% --- Executes during object creation, after setting all properties.
-function sliderThreshold_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to sliderThreshold (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: slider controls usually have a light gray background.
-if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor',[.9 .9 .9]);
-end
-
-% --- Executes during object creation, after setting all properties.
-function editThreshold_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to editThreshold (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function editRed_Callback(hObject, eventdata, handles)
-% hObject    handle to editRed (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of editRed as text
-%        str2double(get(hObject,'String')) returns contents of editRed as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function editRed_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to editRed (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function editGreen_Callback(hObject, eventdata, handles)
-% hObject    handle to editGreen (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of editGreen as text
-%        str2double(get(hObject,'String')) returns contents of editGreen as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function editGreen_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to editGreen (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function editBlue_Callback(hObject, eventdata, handles)
-% hObject    handle to editBlue (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of editBlue as text
-%        str2double(get(hObject,'String')) returns contents of editBlue as a double
-validateNumToSlider(hObject,handles.sliderBlue,0);
-
-% --- Executes during object creation, after setting all properties.
-function editBlue_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to editBlue (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
+set(gca,'Tag','axesMask');
 
 % --- Executes on button press in btnStain.
 function btnStain_Callback(hObject, eventdata, handles)
@@ -282,23 +211,24 @@ function btnStain_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global IMG;
-try
-    mask = getImage(findobj('Tag','axes3'));
-    r = str2double(get(findobj('Tag','editRed'),'String'));
-    g = str2double(get(findobj('Tag','editGreen'),'String'));
-    b = str2double(get(findobj('Tag','editBlue'),'String'));
+global selectMask;
+%try
+    mask = selectMask;
+    r = round(str2double(get(findobj(gcf,'Tag','editRed'),'String')));
+    g = round(str2double(get(findobj(gcf,'Tag','editGreen'),'String')));
+    b = round(str2double(get(findobj(gcf,'Tag','editBlue'),'String')));
 
-    newImg = zeros(size(IMG));
-    newImg(:,:,1) = img(:,:,1) + (r*mask);
-    newImg(:,:,2) = img(:,:,2) + (g*mask);
-    newImg(:,:,3) = img(:,:,3) + (b*mask);
+    newImg = IMG;
+    newImg(:,:,1) = IMG(:,:,1) + fix(r*mask);
+    newImg(:,:,2) = IMG(:,:,2) + fix(g*mask);
+    newImg(:,:,3) = IMG(:,:,3) + fix(b*mask);
     axes(handles.axes2);
     imshow(newImg);
     set(gca,'Tag','axes2');
-catch
-    errordlg('Error, try to click on the stain first',...
-        'Error adjusting stain');
-end
+%catch
+%    errordlg('Error, try to click on the stain first',...
+%        'Error adjusting stain');
+%end
 
 % --- Executes on button press in btnSave.
 function btnSave_Callback(hObject, eventdata, handles)
@@ -306,72 +236,7 @@ function btnSave_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global IMG;
-IMG = getImage(findobj('Tag','axes2'));
-
-% --- Executes on key press with focus on editThreshold and none of its controls.
-function editThreshold_KeyPressFcn(hObject, eventdata, handles)
-% hObject    handle to editThreshold (see GCBO)
-% eventdata  structure with the following fields (see UICONTROL)
-%	Key: name of the key that was pressed, in lower case
-%	Character: character interpretation of the key(s) that was pressed
-%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
-% handles    structure with handles and user data (see GUIDATA)
-
-validateNumToSlider(hObject,handles.sliderThreshold,0.1);
-
-
-% --- Executes on key press with focus on editRed and none of its controls.
-function editRed_KeyPressFcn(hObject, eventdata, handles)
-% hObject    handle to editRed (see GCBO)
-% eventdata  structure with the following fields (see UICONTROL)
-%	Key: name of the key that was pressed, in lower case
-%	Character: character interpretation of the key(s) that was pressed
-%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
-% handles    structure with handles and user data (see GUIDATA)
-validateNumToSlider(hObject,handles.sliderRed,0);
-
-
-% --- Executes on key press with focus on editGreen and none of its controls.
-function editGreen_KeyPressFcn(hObject, eventdata, handles)
-% hObject    handle to editGreen (see GCBO)
-% eventdata  structure with the following fields (see UICONTROL)
-%	Key: name of the key that was pressed, in lower case
-%	Character: character interpretation of the key(s) that was pressed
-%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
-% handles    structure with handles and user data (see GUIDATA)
-validateNumToSlider(hObject,handles.sliderGreen,0);
-
-
-% --- Executes on key press with focus on editBlue and none of its controls.
-function editBlue_KeyPressFcn(hObject, eventdata, handles)
-% hObject    handle to editBlue (see GCBO)
-% eventdata  structure with the following fields (see UICONTROL)
-%	Key: name of the key that was pressed, in lower case
-%	Character: character interpretation of the key(s) that was pressed
-%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
-% handles    structure with handles and user data (see GUIDATA)
-validateNumToSlider(hObject,handles.sliderTBlue,0);
-
-% --- Executes during object creation, after setting all properties.
-function editPosY_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to editPosY (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-% --- Executes during object creation, after setting all properties.
-function editPosX_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to editPosX (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
+IMG = getImage(findobj(gcf,'Tag','axes2'));
+close;
+set(0, 'currentfigure', findobj('Type','Figure','Name','negative'));
+showImage();

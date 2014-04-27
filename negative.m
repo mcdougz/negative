@@ -22,7 +22,7 @@ function varargout = negative(varargin)
 
 % Edit the above text to modify the response to help negative
 
-% Last Modified by GUIDE v2.5 27-Apr-2014 18:11:17
+% Last Modified by GUIDE v2.5 27-Apr-2014 22:12:41
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -543,6 +543,7 @@ s = size(IMG);
 for i=1:s(3)
     IMG(:,:,i) = histeq(IMG(:,:,i));
 end
+showImage();
 
 % --------------------------------------------------------------------
 function menuAutoCrop_Callback(hObject, eventdata, handles)
@@ -615,8 +616,8 @@ showImage();
 
 
 % --------------------------------------------------------------------
-function menuAdvBatchSplit_Callback(hObject, eventdata, handles)
-% hObject    handle to menuAdvBatchSplit (see GCBO)
+function menuAdvSplitMultiImg_Callback(hObject, eventdata, handles)
+% hObject    handle to menuAdvSplitMultiImg (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
@@ -644,16 +645,16 @@ function menuAdvBatchCast_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 %applies grayworld to all images in a directory
-pathName = uigetdir(pwd,'Select a directory to save multiple images');
+pathName = uigetdir(pwd,'Select a directory to open multiple images');
 
 %based on http://mathworks.co.uk/matlabcentral/answers/385-how-to-read-images-in-a-folder#answer_526
 imagefiles = dir([pathName '\*.jpg']);
 nfiles = length(imagefiles);
 for i=1:nfiles
    currentfilename = imagefiles(i).name;
-   currentimage = imread(currentfilename);
+   currentimage = imread([pathName '\' currentfilename]);
    currentimage = grayWorld(currentimage);
-   imwrite(currentimage,currentfilename);
+   imwrite(currentimage,[pathName '\' currentfilename]);
 end
 
 % --------------------------------------------------------------------
@@ -676,6 +677,8 @@ function menuAutoSamplePhoto_Callback(hObject, eventdata, handles)
 
 %crop
 menuAutoCrop_Callback(hObject,eventdata,handles);
+%fliplr
+menuEnhanceFlipH_Callback(hObject,eventdata,handles);
 %contrast
 menuAutoContrast_Callback(hObject,eventdata,handles);
 %cast
@@ -689,6 +692,33 @@ menuCastDetectFilm_Callback(hObject,eventdata,handles);
 %set(findobj(gcf,'Tag','editGamma'),'String','0.9');
 %set(findobj(gcf,'Tag','sliderSaturation'),'Value',0.7);
 %set(findobj(gcf,'Tag','editSaturation'),'String','0.7');
-
 %maxrgb
 menuCastMaxrgb_Callback(hObject,eventdata,handles);
+
+
+% --------------------------------------------------------------------
+function menuAdvFullProcess_Callback(hObject, eventdata, handles)
+% hObject    handle to menuAdvFullProcess (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% --------------------------------------------------------------------
+global IMG;
+originalIMG = IMG;
+%applies batch process to all images in a directory
+pathName = uigetdir(pwd,'Select a directory to open multiple images');
+
+imagefiles = dir([pathName '\*.jpg']);
+nfiles = length(imagefiles);
+h = waitbar(0,['Processing ' num2str(nfiles) ' files...']);
+for i=1:nfiles
+   currentfilename = imagefiles(i).name;
+   currentimage = imread([pathName '\' currentfilename]);
+   IMG = 255-currentimage;
+   menuAutoSamplePhoto_Callback(hObject, eventdata, handles);
+   imwrite(currentimage,[pathName '\' currentfilename]);
+   waitbar(round(i/nfiles),h,['Processing: ' ...
+       num2str(i) '/' num2str(nfiles)]);
+end
+IMG = originalIMG;
+delete(h);
+showImage();

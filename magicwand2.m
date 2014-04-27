@@ -182,17 +182,17 @@ bin_mask = LUT(objects+1);
 
 
 % Output
-TAG = 'Binary image result of magicwand';
-obj  = findobj('tag',TAG);
+%TAG = 'axesMask';
+%obj  = findobj('tag',TAG);
 
-if isempty(obj), 
-    h = figure;
-    set(h,'tag',TAG);
-    Name = ['Fig ', num2str(h), ': ', TAG];
-    set(h,'NumberTitle','off','Name',Name);
-else, 
-    figure(obj);
-end
+%if isempty(obj), 
+%    h = figure;
+%    set(h,'tag',TAG);
+%    Name = ['Fig ', num2str(h), ': ', TAG];
+%    set(h,'NumberTitle','off','Name',Name);
+%else, 
+%    figure(obj);
+%end
 
-clf
-imshow(bin_mask,'InitialMagnification','fit');
+%clf
+%imshow(bin_mask,'InitialMagnification','fit');

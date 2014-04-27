@@ -1,4 +1,6 @@
 function out = maxRGB(img)
+%max RGB / white patch algorithm for colour correction
+%assumes the brighest pixel to be white
 
 %split channels
 R = img(:,:,1);
