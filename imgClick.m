@@ -27,7 +27,7 @@ global IMG;
 viewfinderRect = [plotX-25,plotY-25,50,50];
 viewfinder = imcrop(IMG,viewfinderRect);
 set(gcf, 'currentaxes', findobj(gcf,'Tag','axesViewfinder2'));
-imshow(viewfinder);
+imshow(applyTempFilters(viewfinder));
 set(gca,'Tag','axesViewfinder2');
 
 r = IMG(plotY,plotX,1);

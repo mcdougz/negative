@@ -1,12 +1,14 @@
 function out = applyTempFilters(img)
 %Applies temporary filters such as brightness and contrast,
 %to be used just before outputting the image on screen.
+
 if nargin < 1
     global IMG;
     img = IMG;
 end
 
 %saturation
+%TODO: speed up, this takes much longer than the others
 Vsaturation = str2double(get(findobj('Tag','editSaturation'),'String'));
 if Vsaturation ~= 1.0
     try
@@ -33,7 +35,7 @@ if Vcontrast~=1 || Vgamma ~= 1.0
         %0.8        | [0.1  0.9]
         %0.7        | [0.15 0.85]
         %0.n        | [(1-n)/2 1-((1-n)/2)]
-        contrastOut = [(1-Vcontrast)/2 1-((1-vContrast)/2)];
+        contrastOut = [(1-Vcontrast)/2 1-((1-Vcontrast)/2)];
         img = imadjust(img,[0 1],contrastOut,Vgamma);
     end
 end

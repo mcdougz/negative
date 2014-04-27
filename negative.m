@@ -345,14 +345,14 @@ set(findobj(gcf,'-depth',1,'Tag','txtCoords'),'String',imgsize);
 IMG = 255-IMG;
 
 %reset sliders/editboxes
-set(gcf,findobj('Tag','sliderBrightness'),'Value',1);
-set(gcf,findobj('Tag','editBrightness'),'String',1);
-set(gcf,findobj('Tag','sliderContrast'),'Value',1);
-set(gcf,findobj('Tag','editContrast'),'String',1);
-set(gcf,findobj('Tag','sliderGamma'),'Value',1);
-set(gcf,findobj('Tag','editGamma'),'String',1);
-set(gcf,findobj('Tag','sliderSaturation'),'Value',1);
-set(gcf,findobj('Tag','editSaturation'),'String',1);
+    set(findobj(gcf,'Tag','sliderBrightness'),'Value',1.0);
+    set(findobj(gcf,'Tag','editBrightness'),'String','1');
+    set(findobj(gcf,'Tag','sliderContrast'),'Value',1.0);
+    set(findobj(gcf,'Tag','editContrast'),'String','1');
+    set(findobj(gcf,'Tag','sliderGamma'),'Value',1.0);
+    set(findobj(gcf,'Tag','editGamma'),'String','1');
+    set(findobj(gcf,'Tag','sliderSaturation'),'Value',1.0);
+    set(findobj(gcf,'Tag','editSaturation'),'String','1');
 
 showImage();
 
@@ -552,7 +552,6 @@ function menuAutoCrop_Callback(hObject, eventdata, handles)
 
 %automatically crop
 global IMG;
-global rectangle;
 r = regionprops(~im2bw(IMG,0.8),'Area','BoundingBox');
 biggest = 1;
 for i = 1:length(r)
@@ -562,9 +561,14 @@ for i = 1:length(r)
 end
 
 IMG = imcrop(IMG,r(biggest).BoundingBox);
+%crop a few more pixels
+IMG = IMG(5:end-10,5:end-10,:);
+
+%add a new rectangle
+%[sizey,sizex] = size(IMG);
+%rectangle = imrect(findobj(gcf,'Tag','axes1'),[5,5,sizex/3-10,sizey-10]);
+
 showImage();
-[sizey,sizex] = size(IMG);
-rectangle = imrect(findobj(gcf,'Tag','axes1'),[5,5,sizex/3-10,sizey-10]);
 
 % --------------------------------------------------------------------
 function menuAutoContrast_Callback(hObject, eventdata, handles)
@@ -667,10 +671,24 @@ function menuAutoSamplePhoto_Callback(hObject, eventdata, handles)
 % hObject    handle to menuAutoSamplePhoto (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-set(gcf,findobj('Tag','sliderBrightness'),'Value',1.1);
-set(gcf,findobj('Tag','editBrightness'),'String',1.1);
-set(gcf,findobj('Tag','sliderContrast'),'Value',1.3);
-set(gcf,findobj('Tag','editContrast'),'String',1.3);
+
+%does all automatic stuff
+
+%crop
 menuAutoCrop_Callback(hObject,eventdata,handles);
+%contrast
+menuAutoContrast_Callback(hObject,eventdata,handles);
+%cast
 menuCastDetectFilm_Callback(hObject,eventdata,handles);
-%TODO: possibly detect rotated images?
+%sliders
+%set(findobj(gcf,'Tag','sliderBrightness'),'Value',1.5);
+%set(findobj(gcf,'Tag','editBrightness'),'String','1.5');
+%set(findobj(gcf,'Tag','sliderContrast'),'Value',1.2);
+%set(findobj(gcf,'Tag','editContrast'),'String','1.2');
+%set(findobj(gcf,'Tag','sliderGamma'),'Value',0.9);
+%set(findobj(gcf,'Tag','editGamma'),'String','0.9');
+%set(findobj(gcf,'Tag','sliderSaturation'),'Value',0.7);
+%set(findobj(gcf,'Tag','editSaturation'),'String','0.7');
+
+%maxrgb
+menuCastMaxrgb_Callback(hObject,eventdata,handles);
