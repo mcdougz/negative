@@ -15,14 +15,14 @@ function varargout = negative(varargin)
 %      unrecognized property name or invalid value makes property application
 %      stop.  All inputs are passed to negative_OpeningFcn via varargin.
 %
-%      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
+%      *See GUI Options on GUIDE's Tools menuAutoSamplePhoto.  Choose "GUI allows only one
 %      instance to run (singleton)".
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 
 % Edit the above text to modify the response to help negative
 
-% Last Modified by GUIDE v2.5 27-Apr-2014 14:03:39
+% Last Modified by GUIDE v2.5 27-Apr-2014 16:08:41
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -343,6 +343,17 @@ set(findobj(gcf,'-depth',1,'Tag','txtCoords'),'String',imgsize);
 
 %invert image
 IMG = 255-IMG;
+
+%reset sliders/editboxes
+set(gcf,findobj('Tag','sliderBrightness'),'Value',1);
+set(gcf,findobj('Tag','editBrightness'),'String',1);
+set(gcf,findobj('Tag','sliderContrast'),'Value',1);
+set(gcf,findobj('Tag','editContrast'),'String',1);
+set(gcf,findobj('Tag','sliderGamma'),'Value',1);
+set(gcf,findobj('Tag','editGamma'),'String',1);
+set(gcf,findobj('Tag','sliderSaturation'),'Value',1);
+set(gcf,findobj('Tag','editSaturation'),'String',1);
+
 showImage();
 
 % --------------------------------------------------------------------
@@ -361,9 +372,8 @@ function uipushtoolExperiment_ClickedCallback(hObject, eventdata, handles)
 % hObject    handle to uipushtoolExperiment (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global selectMask;
-figSelect();
-showMask();
+%figSelect();
+%showMask();
 
 
 
@@ -474,11 +484,13 @@ function menuCastDetectFilm_Callback(hObject, eventdata, handles)
 
 %quite bad, assumes the film is exposed 10 pixels above the bottom edge,
 % and ignores holes in film.
-%TODO: improve this
+%TODO: improve this, it can easily fail
 global IMG;
 [sizey,sizex] = size(IMG);
-cast = median(IMG(sizey-10,:,:));
+cast = median(IMG(sizey-25,:,:));
 IMG = removeCast(IMG,cast(1),cast(2),cast(3));
+%crop a bit off the bottom
+IMG = IMG(1:(end-40),:,:);
 showImage();
 
 % --------------------------------------------------------------------
@@ -648,3 +660,17 @@ function menuAdvInvert_Callback(hObject, eventdata, handles)
 global IMG;
 IMG = 255-IMG;
 showImage();
+
+
+% --------------------------------------------------------------------
+function menuAutoSamplePhoto_Callback(hObject, eventdata, handles)
+% hObject    handle to menuAutoSamplePhoto (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+set(gcf,findobj('Tag','sliderBrightness'),'Value',1.1);
+set(gcf,findobj('Tag','editBrightness'),'String',1.1);
+set(gcf,findobj('Tag','sliderContrast'),'Value',1.3);
+set(gcf,findobj('Tag','editContrast'),'String',1.3);
+menuAutoCrop_Callback(hObject,eventdata,handles);
+menuCastDetectFilm_Callback(hObject,eventdata,handles);
+%TODO: possibly detect rotated images?

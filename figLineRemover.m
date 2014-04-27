@@ -22,7 +22,7 @@ function varargout = figLineRemover(varargin)
 
 % Edit the above text to modify the response to help figLineRemover
 
-% Last Modified by GUIDE v2.5 26-Apr-2014 17:24:25
+% Last Modified by GUIDE v2.5 27-Apr-2014 16:11:15
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -234,14 +234,15 @@ if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColo
     set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
 
-% --- Executes on button press in pushbutton2.
-function pushbutton2_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton2 (see GCBO)
+% --- Executes on button press in btnSave.
+function btnSave_Callback(hObject, eventdata, handles)
+% hObject    handle to btnSave (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global IMG;
 IMG = getimage(findobj('Tag','axes2'));
 close;
+set(0, 'currentfigure', findobj('Type','Figure','Name','negative'));
 showImage();
 
 % --- Executes during object creation, after setting all properties.

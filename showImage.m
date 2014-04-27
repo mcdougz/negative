@@ -2,7 +2,7 @@ function showImage()
 % displays the image and updates colour histograms
 global IMG;
 axes(findobj(findobj(0,'Type','figure','Name','negative'),'Tag','axes1'));
-
+imshow('res/loading.png');drawnow;
 %apply filters here instead of editing IMG, to conserve quality
 imshow(applyTempFilters(IMG));
 

@@ -22,7 +22,7 @@ function varargout = figSharpen(varargin)
 
 % Edit the above text to modify the response to help figSharpen
 
-% Last Modified by GUIDE v2.5 26-Apr-2014 17:18:09
+% Last Modified by GUIDE v2.5 27-Apr-2014 16:14:00
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -65,7 +65,7 @@ guidata(hObject, handles);
 global IMG;
 
 %debug
-IMG = imread('photo/14.jpg');
+%IMG = imread('photo/14.jpg');
 
 axes(handles.axes1);
 imshow(IMG);
@@ -204,9 +204,9 @@ function btnSave_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global IMG;
-IMG = getimage(findobj('Tag','axes2'));
+IMG = getimage(findobj(gcf,'Tag','axes2'));
 close;
-set(0, 'currentfigure', findobj('type','figure','Name','negative'));
+set(0, 'currentfigure', findobj('Type','Figure','Name','negative'));
 showImage();
 
 % --- Executes on button press in btnSharpen.

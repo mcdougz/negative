@@ -4,13 +4,12 @@ function y = removeCast(img,r,g,b)
 % g = green
 % b = blue
 [h,s,v] = ColourSpaces.RGBtoHSV(r,g,b);
-newImg = zeros(size(img));
 
 newImg(:,:,1) = img(:,:,1) - r;
 newImg(:,:,2) = img(:,:,2) - g;
 newImg(:,:,3) = img(:,:,3) - b;
 
-newImg = rgbStretchlim(newImg);
+%newImg = rgbStretchlim(newImg);
 
 y = newImg;
 
