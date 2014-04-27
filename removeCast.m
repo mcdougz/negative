@@ -1,33 +1,33 @@
 function y = removeCast(img,r,g,b)
-%removes a colour cast from an image, given the RGB of a white.
+%removes a colour cast from an image, given the RGB of a black.
 % r = red
 % g = green
 % b = blue
-y=255-img;
 [h,s,v] = ColourSpaces.RGBtoHSV(r,g,b);
+newImg = zeros(size(img));
 
-rChange=r;
-gChange=g;
-bChange=b;
+newImg(:,:,1) = img(:,:,1) - r;
+newImg(:,:,2) = img(:,:,2) - g;
+newImg(:,:,3) = img(:,:,3) - b;
 
-%work in progress:
-% trying to set light things to white
-if (v>0.5)
-    rChange=-r;
-    gChange=-g;
-    bChange=-b;
+newImg = rgbStretchlim(newImg);
+
+y = newImg;
+
+function removeCast_imadjust(img,r,g,b)
+%retired function, slightly broken
+if (v<0.8)
+    % if the pixel is light set it to white
+    newR = imadjust(img(:,:,1),[0 ColourSpaces.normalize(r)]);
+    newG = imadjust(img(:,:,2),[0 ColourSpaces.normalize(g)]);
+    newB = imadjust(img(:,:,3),[0 ColourSpaces.normalize(b)]);
+else
+    % if the pixel is dark set it to black
+    newR = imadjust(img(:,:,1),[ColourSpaces.normalize(r) 1]);
+    newG = imadjust(img(:,:,2),[ColourSpaces.normalize(g) 1]);
+    newB = imadjust(img(:,:,3),[ColourSpaces.normalize(b) 1]);
 end
 
-%for i=1:size(img,1)
-%    for j=1:size(img,2)
-%        y(i,j) = y(i,j) + [rChange gChange bChange];
-%    end
-%end
-
-y(:,:,1) = y(:,:,1)+rChange;
-y(:,:,2) = y(:,:,2)+gChange;
-y(:,:,3) = y(:,:,3)+bChange;
-
-
-y=255-y;
-%y = rgbStretchlim(y);
+newImg(:,:,1) = newR;
+newImg(:,:,2) = newG;
+newImg(:,:,3) = newB;
