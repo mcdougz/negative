@@ -1,0 +1,6 @@
+function imgSave()
+global IMG;
+[filename,pathname] = uiputfile({...
+        '*.jpg;*.png;*.gif','All Image Files';...
+        '*.*','All Files' },'Save Image');
+imwrite(applyTempFilters(IMG),[pathname filename]);
