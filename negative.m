@@ -22,7 +22,7 @@ function varargout = negative(varargin)
 
 % Edit the above text to modify the response to help negative
 
-% Last Modified by GUIDE v2.5 27-Apr-2014 16:08:41
+% Last Modified by GUIDE v2.5 27-Apr-2014 18:11:17
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -630,7 +630,7 @@ pathName = uigetdir(pwd,'Select a directory to save multiple images');
 global IMG;
 IMGs = splitSameImg(IMG,0.2);
 for i=1:size(IMGs)
-    imwrite(IMGs{i},[fileName '_' num2str(i) '.jpg']);
+    imwrite(IMGs{i},[pathName '\' fileName '_' num2str(i) '.jpg']);
 end
 
 % --------------------------------------------------------------------
