@@ -213,16 +213,32 @@ function btnStain_Callback(hObject, eventdata, handles)
 global IMG;
 global selectMask;
 %try
+    axes(handles.axes2);
+    imshow('res/loading.png');
     mask = selectMask;
     r = round(str2double(get(findobj(gcf,'Tag','editRed'),'String')));
     g = round(str2double(get(findobj(gcf,'Tag','editGreen'),'String')));
     b = round(str2double(get(findobj(gcf,'Tag','editBlue'),'String')));
 
     newImg = IMG;
-    newImg(:,:,1) = IMG(:,:,1) + fix(r*mask);
-    newImg(:,:,2) = IMG(:,:,2) + fix(g*mask);
-    newImg(:,:,3) = IMG(:,:,3) + fix(b*mask);
-    axes(handles.axes2);
+    disp([r;g;b]);
+    if r>0
+        newImg(:,:,1) = IMG(:,:,1) + uint8(mask*r);
+    else
+        newImg(:,:,1) = IMG(:,:,1) - uint8(mask*abs(r));
+    end
+    if g>0
+        newImg(:,:,2) = IMG(:,:,2) + uint8(mask*g);
+    else
+        newImg(:,:,2) = IMG(:,:,2) - uint8(mask*abs(g));
+    end
+    if b>0
+        newImg(:,:,3) = IMG(:,:,3) + uint8(mask*b);
+    else
+        newImg(:,:,3) = IMG(:,:,3) - uint8(mask*abs(b));
+    end
+    
+    
     imshow(newImg);
     set(gca,'Tag','axes2');
 %catch
@@ -236,7 +252,7 @@ function btnSave_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global IMG;
-IMG = getImage(findobj(gcf,'Tag','axes2'));
+IMG = getimage(findobj(gcf,'Tag','axes2'));
 close;
 set(0, 'currentfigure', findobj('Type','Figure','Name','negative'));
 showImage();
