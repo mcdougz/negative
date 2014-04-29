@@ -215,6 +215,7 @@ global selectMask;
 %try
     axes(handles.axes2);
     imshow('res/loading.png');
+    set(gca,'Tag','axes2');
     mask = selectMask;
     r = round(str2double(get(findobj(gcf,'Tag','editRed'),'String')));
     g = round(str2double(get(findobj(gcf,'Tag','editGreen'),'String')));

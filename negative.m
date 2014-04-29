@@ -315,7 +315,12 @@ function btnPushCrop_ClickedCallback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 global rectangle;
 global IMG;
-pos = getPosition(rectangle);
+try
+    pos = getPosition(rectangle);
+catch
+    errordlg('Rectangle doesn''t exist, draw one now!','No rectangle found.');
+    btnPushRect_ClickedCallback(hObject,eventdata,handles);
+end
 IMG = imcrop(IMG,pos);
 showImage();
 
@@ -335,7 +340,12 @@ function txtImgPath_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of txtImgPath as a double
 
 global IMG;
-IMG = imread(get(findobj('Tag','txtImgPath'),'String'));
+try
+    IMG = imread(get(findobj('Tag','txtImgPath'),'String'));
+catch
+    errordlg('Could not read from file, try again!','Error opening file');
+    return
+end
 
 % put image dimensions on the right
 imgsize = strcat('[',num2str(size(IMG,2)),',',num2str(size(IMG,1)),']');
